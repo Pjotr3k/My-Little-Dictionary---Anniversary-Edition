@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33530.505
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "My Little Dictionary - Anniversary Edition", "My Little Dictionary - Anniversary Edition\My Little Dictionary - Anniversary Edition.csproj", "{A27A4253-F109-4ED6-9520-70705971994F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A27A4253-F109-4ED6-9520-70705971994F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A27A4253-F109-4ED6-9520-70705971994F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A27A4253-F109-4ED6-9520-70705971994F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A27A4253-F109-4ED6-9520-70705971994F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {25554E6C-09B8-4F54-9267-8BF5CE21BE64}
+	EndGlobalSection
+EndGlobal
