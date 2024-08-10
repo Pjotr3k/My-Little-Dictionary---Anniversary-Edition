@@ -1,10 +1,28 @@
 import { useParams } from "react-router"
-import { useLanguage } from "../../hooks/useLanguages"
+import { useLanguage } from "../../hooks/queries/useLanguages"
 import PartsOfSpeechList from "./PartsOfSpeechList"
+import useBreadcrumbs from "../../hooks/useBreadcrumbs"
 
 export default function LanguageBrowse(){
     const {id} = useParams()
     const {data, isLoading, isError} = useLanguage(id!)
+
+    useBreadcrumbs([
+        {
+            label: "Home",
+            link: "/"
+        },
+        {
+            label: "Linguistics",
+            link: "/linguistics"
+        },
+        {
+            label: data?.result.name ? data?.result.name : "Loading...",
+            link: `/linguistics/${id}`
+        }
+
+    ])
+
 
     if(isLoading)
         return <div>Loading, please wait...</div>

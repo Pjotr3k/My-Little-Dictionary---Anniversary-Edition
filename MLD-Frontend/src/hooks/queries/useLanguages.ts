@@ -1,6 +1,6 @@
 import { useQuery } from "react-query";
-import { backendURL } from "../config";
-import { ApiResponse, Language } from "../types";
+import { backendURL } from "../../config";
+import { ApiResponse, Language } from "../../types";
 
 export default function useLanguages(){
     return useQuery<ApiResponse<Array<Language>>>({

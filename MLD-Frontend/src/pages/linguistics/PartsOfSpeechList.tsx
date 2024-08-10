@@ -1,5 +1,5 @@
 import ItemList from "../../components/ItemList";
-import usePartsOfSpeech from "../../hooks/usePartsOfSpeech";
+import usePartsOfSpeech from "../../hooks/queries/usePartsOfSpeech";
 import PartsOfSpeechItemDetail from "./PartsOfSpeechItemDetail";
 
 type Props = {

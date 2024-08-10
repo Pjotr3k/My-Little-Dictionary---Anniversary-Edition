@@ -1,6 +1,6 @@
 import { useQuery } from "react-query";
-import { backendURL } from "../config";
-import { ApiResponse, PartOfSpeech } from "../types";
+import { backendURL } from "../../config";
+import { ApiResponse, PartOfSpeech } from "../../types";
 
 export default function useForms(pos?: string){
     const params = pos ? `?code=${encodeURIComponent(pos)}` : ""

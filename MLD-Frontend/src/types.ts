@@ -24,3 +24,8 @@ export type Form = {
     name: string;
     description: string; 
 } & WithID
+
+export type Breadcrumb = {
+    label: string,
+    link: string
+}

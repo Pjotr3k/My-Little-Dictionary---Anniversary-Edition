@@ -1,6 +1,6 @@
 import { useQuery } from "react-query";
-import { backendURL } from "../config";
-import { ApiResponse, PartOfSpeech } from "../types";
+import { backendURL } from "../../config";
+import { ApiResponse, PartOfSpeech } from "../../types";
 
 export default function usePartsOfSpeech(code?: string){
     const params = code ? `?code=${encodeURIComponent(code)}` : ""
