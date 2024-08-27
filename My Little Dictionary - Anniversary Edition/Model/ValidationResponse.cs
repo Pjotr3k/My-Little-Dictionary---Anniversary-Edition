@@ -9,11 +9,38 @@
 
         public ValidationResponse() { }
 
-        public void MergeValidation<U>(ValidationResponse<U> source)
+        public ValidationResponse(T? result)
+        {
+            Result = result;
+        }
+
+        public void Deconstruct(out T? result)
+        {
+            result = Result;
+        }
+
+
+        public void Deconstruct(out T? result, out List<string> errors)
+        {
+            result = Result;
+            errors = Errors;
+        }
+
+        public ValidationResponse<T> Merge(ValidationResponse<T> source)
+        {
+            MergeValidation(source);
+            Result = source.Result;
+
+            return this;
+        }
+
+        public ValidationResponse<T> MergeValidation<U>(ValidationResponse<U> source)
         {
             Notifications.AddRange(source.Notifications);
             Warnings.AddRange(source.Warnings);
             Errors.AddRange(source.Errors);
+
+            return this;
         }
     }
 }

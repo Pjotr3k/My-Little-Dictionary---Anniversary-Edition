@@ -1,10 +1,11 @@
 ﻿
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using My_Little_Dictionary___Anniversary_Edition.Model;
 
 namespace My_Little_Dictionary___Anniversary_Edition.Data
 {
-    public class ApplicationDBContext : DbContext
+    public class ApplicationDBContext : IdentityDbContext
     {
         public ApplicationDBContext(DbContextOptions dbContextOptions) : base(dbContextOptions)
         {
@@ -20,6 +21,6 @@ namespace My_Little_Dictionary___Anniversary_Edition.Data
         public DbSet<Language> Language { get; set; }
         public DbSet<PartOfSpeech> PartOfSpeech { get; set; }
         public DbSet<Word> Word { get; set; }
-
+        public DbSet<RefreshToken> RefreshToken { get; set; }
     }
 }
