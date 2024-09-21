@@ -1,9 +1,10 @@
 import { useMutation } from "react-query";
 import { backendURL } from "../../config";
-import { ApiResponse, LoginRequest, LoginResponse } from "../../types";
 import axios, { AxiosResponse } from "axios";
 import { bearerExpiration, bearerRefresh, bearerToken } from "../../helpers/storage-dictionary";
 import { NavigateFunction, useNavigate } from "react-router";
+import { ApiResponse } from "../../types/api-communication";
+import { LoginRequest, LoginResponse } from "../../types/security";
 
 export default function useLogin(redirectURL: string = "/"){
     const navigate = useNavigate();

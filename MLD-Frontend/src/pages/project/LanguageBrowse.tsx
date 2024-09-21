@@ -1,6 +1,6 @@
 import { useParams } from "react-router"
 import { useLanguage } from "../../hooks/queries/useLanguages"
-import PartsOfSpeechList from "./PartsOfSpeechList"
+import Lexicology from "./lexicology/Lexicology"
 import useBreadcrumbs from "../../hooks/useBreadcrumbs"
 
 export default function LanguageBrowse(){
@@ -37,7 +37,7 @@ export default function LanguageBrowse(){
         <p>
             {description}
         </p>
-            <PartsOfSpeechList langCode={code} />
+            <Lexicology langCode={code} />
     </div>
 
 }

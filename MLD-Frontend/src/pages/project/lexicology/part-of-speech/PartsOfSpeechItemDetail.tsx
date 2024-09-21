@@ -1,6 +1,5 @@
-import { Paper } from "@mui/material";
-import { PartOfSpeech } from "../../types"
-import FormList from "./FormList";
+import { PartOfSpeech } from "../../../../types/data-models"
+import FormList from "../FormList";
 
 type Props = {
     item: PartOfSpeech

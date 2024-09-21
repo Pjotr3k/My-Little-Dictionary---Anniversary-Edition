@@ -1,13 +1,14 @@
 import { useQuery } from "react-query";
-import { ApiResponse, Language } from "../../types";
+import { Language } from "../../types/data-models";
 import getAxiosInstance from "../../helpers/axios-instance";
+import { ApiResponse, PaginationRequest, PaginationResponse } from "../../types/api-communication";
 
-export default function useLanguages(){
+export default function useLanguages(request: PaginationRequest){
     const axiosInstance = getAxiosInstance();
-    return useQuery<ApiResponse<Array<Language>>>({
+    return useQuery<PaginationResponse<Language>>({
         queryKey: ["languages"],
         queryFn: async () =>
-            axiosInstance.get("/Linguistics/Language",)
+            axiosInstance.post("/Linguistics/Languages", request)
         .then(res => res.data)
     })
 }

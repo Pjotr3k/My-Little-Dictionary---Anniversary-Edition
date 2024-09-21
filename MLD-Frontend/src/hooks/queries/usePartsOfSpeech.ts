@@ -1,15 +1,16 @@
 import { useQuery } from "react-query";
-import { ApiResponse, PartOfSpeech } from "../../types";
+import { PartOfSpeech } from "../../types/data-models";
 import getAxiosInstance from "../../helpers/axios-instance";
+import { ApiResponse, PaginationRequest } from "../../types/api-communication";
 
-export default function usePartsOfSpeech(code?: string){
+export default function usePartsOfSpeech(request: PaginationRequest, code: string){
     const axiosInstance = getAxiosInstance();
 
     const params = code ? `?code=${encodeURIComponent(code)}` : ""
     return useQuery<ApiResponse<Array<PartOfSpeech>>>({
         queryKey: ["parts-of-speech"],
         queryFn: async () =>
-            axiosInstance.get("Linguistics/PartOfSpeech" + params)
+            axiosInstance.post(`Linguistics/PartOfSpeech/${code}`, request)
         .then((res) => res.data)        
     })
 }

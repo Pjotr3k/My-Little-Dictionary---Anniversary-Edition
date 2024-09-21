@@ -1,7 +1,12 @@
+import HeaderMenu from "./HeaderMenu"
+
 export default function Header(){
-    return <div className=" bg-amber-600 h-[120px] border-y-8 border-amber-700 text-white p-6">
+    return <div className="h-28 sticky flex">
+        <div className="p-6 w-full">
             <h2 className="font-semibold text-2xl capitalize">My Little Dictionary</h2>
             <h4>Anniversary Edition</h4>
         </div>
-    
+        {/* <ProjectData /> */}
+        <HeaderMenu />
+        </div>    
 }

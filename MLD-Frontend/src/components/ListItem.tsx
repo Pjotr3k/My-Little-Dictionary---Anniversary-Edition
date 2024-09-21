@@ -1,5 +1,5 @@
 import { Box, ButtonGroup } from "@mui/material"
-import { WithID } from "../types"
+import { WithID } from "../types/data-models"
 import ItemListButton from "./ItemListButton"
 import eyeIcon from "/icons/eye-icon.svg"
 import editIcon from "/icons/pencil-icon.svg"

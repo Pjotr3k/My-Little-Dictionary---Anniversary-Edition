@@ -1,6 +1,6 @@
 import { useQuery } from "react-query";
 import { backendURL } from "../../config";
-import { ApiResponse, PartOfSpeech } from "../../types";
+import { ApiResponse, PartOfSpeech } from "../../types/data-models";
 import getAxiosInstance from "../../helpers/axios-instance";
 
 export default function useForms(pos?: string){

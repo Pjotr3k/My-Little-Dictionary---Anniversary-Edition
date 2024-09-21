@@ -1,4 +1,4 @@
-import { Language } from "../../types"
+import { Language } from "../../types/data-models"
 
 type Props = {
     item: Language

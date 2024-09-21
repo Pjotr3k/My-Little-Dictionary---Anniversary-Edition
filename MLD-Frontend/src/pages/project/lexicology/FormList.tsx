@@ -1,5 +1,5 @@
-import ItemList from "../../components/ItemList";
-import useForms from "../../hooks/queries/useForms";
+import ItemList from "../../../components/ItemList";
+import useForms from "../../../hooks/queries/useForms";
 import FormItemDetail from "./FormItemDetail";
 
 type Props = {

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Breadcrumb } from "../../types";
+import { Breadcrumb } from "../../types/data-models";
 
 
 

@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import { ApiResponse, LoginResponse, RegisterRequest } from "../../types";
+import { ApiResponse, LoginResponse, RegisterRequest } from "../../types/data-models";
 import { useMutation } from "react-query";
 import { backendURL } from "../../config";
 import { handeLoginResponse } from "./useLogin";

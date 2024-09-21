@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux"
 import { NavLink, useLocation } from "react-router-dom";
-import { Breadcrumb } from "../../types";
+import { Breadcrumb } from "../../types/data-models";
 import { Fragment } from "react/jsx-runtime";
 
 export default function Breadcrumbs(){

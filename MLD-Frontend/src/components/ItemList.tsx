@@ -1,4 +1,4 @@
-import { WithID } from "../types"
+import { WithID } from "../types/data-models"
 import ListItem from "./ListItem"
 
 type Props<T extends WithID> = {
