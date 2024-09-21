@@ -9,7 +9,7 @@
     {
         public string Expression { get; set; }
         public Form Form { get; set; }
-        public Entry Entry { get; set; }
+        public Lexeme Lexeme { get; set; }
 
         public Word() : base()
         {

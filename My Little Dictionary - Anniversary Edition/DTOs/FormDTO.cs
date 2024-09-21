@@ -26,7 +26,6 @@ namespace My_Little_Dictionary___Anniversary_Edition.DTOs
     {
         public string Name { get; set; }
         public string? Description { get; set; }
-        public Guid PartOfSpeech { get; set; }
     }
 
 }

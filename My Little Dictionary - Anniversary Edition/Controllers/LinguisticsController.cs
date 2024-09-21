@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using My_Little_Dictionary___Anniversary_Edition.DTOs;
-using My_Little_Dictionary___Anniversary_Edition.Interfaces;
 using My_Little_Dictionary___Anniversary_Edition.Mappers;
 using My_Little_Dictionary___Anniversary_Edition.Model;
+using My_Little_Dictionary___Anniversary_Edition.Services.Interfaces;
 
 namespace My_Little_Dictionary___Anniversary_Edition.Controllers
 {
@@ -27,10 +27,10 @@ namespace My_Little_Dictionary___Anniversary_Edition.Controllers
             return Ok(result);
         }
 
-        [HttpGet]
-        public IActionResult Language()
+        [HttpPost]
+        public IActionResult Languages([FromBody] PaginationRequestDTO request)
         {
-            var result = _linguisticsService.GetAllLanguages();
+            var result = _linguisticsService.GetLanguages(request);
             return Ok(result);
         }
 
@@ -38,6 +38,20 @@ namespace My_Little_Dictionary___Anniversary_Edition.Controllers
         public IActionResult Language([FromRoute] Guid id)
         {
             var result = _linguisticsService.GetLanguageById(id);
+            return Ok(result);
+        }
+
+        [HttpPost]
+        public IActionResult Project([FromBody] ProjectInsertDTO request)
+        {
+            var result = _linguisticsService.AddProject(request);
+            return Ok(result);
+        }
+
+        [HttpPost]
+        public IActionResult Projects([FromBody] PaginationRequestDTO request)
+        {
+            var result = _linguisticsService.GetProjects(request);
             return Ok(result);
         }
 
@@ -58,41 +72,36 @@ namespace My_Little_Dictionary___Anniversary_Edition.Controllers
             return Ok(result);
         }
 
-        [HttpGet()]
-        public IActionResult PartOfSpeech([FromQuery] string? code)
+        [HttpPost("{code}")]
+        public IActionResult PartOfSpeech([FromBody] PaginationRequestDTO request, [FromRoute] string code)
         {
-            ValidationResponse<List<PartOfSpeechDTO>> result;
+            PaginationResponse<PartOfSpeechDTO> result;
 
-            if (!string.IsNullOrEmpty(code))
-            {
-                result = _linguisticsService
-                .GetPartsOfSpeechByLanguageCode(code)
-                .ToDTO();
-            }
-            else
-            {
-                result = _linguisticsService
-                .GetAllPartsOfSpeech()
-                .ToDTO();
-            }
+            var projectVal = _linguisticsService.GetProjectByCode(code);
+            var (project, _) = projectVal;
+
+            if (project == null || projectVal.Errors.Any())
+                return Ok(projectVal);
+            result = _linguisticsService
+                .GetPartsOfSpeechByProject(request, project)
+                .Select(pos => new PartOfSpeechDTO(pos));
 
             return Ok(result);
         }
 
+        //[HttpPost]
+        //public IActionResult Form([FromBody] FormInsertDTO request)
+        //{
+        //    var result = _linguisticsService.AddForm(request);
+        //    return Ok(result);
+        //}
 
-        [HttpPost]
-        public IActionResult Form([FromBody] FormInsertDTO request)
-        {
-            var result = _linguisticsService.AddForm(request);
-            return Ok(result);
-        }
-
-        [HttpPost("Range")]
-        public IActionResult Form([FromBody] List<FormInsertDTO> request)
-        {
-            var result = _linguisticsService.BulkAddForm(request);
-            return Ok(result);
-        }
+        //[HttpPost("Range")]
+        //public IActionResult Form([FromBody] List<FormInsertDTO> request)
+        //{
+        //    var result = _linguisticsService.BulkAddForm(request);
+        //    return Ok(result);
+        //}
 
 
         [HttpGet]

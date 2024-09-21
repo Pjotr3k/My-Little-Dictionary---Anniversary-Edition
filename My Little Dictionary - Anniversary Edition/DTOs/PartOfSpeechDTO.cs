@@ -15,7 +15,7 @@ namespace My_Little_Dictionary___Anniversary_Edition.DTOs
             ID = model.ID;
             Name = model.Name;
             Description = model.Description;
-            Language = model.Language?.ID;
+            Language = model.Project?.ID;
         }
     }
 
@@ -24,5 +24,6 @@ namespace My_Little_Dictionary___Anniversary_Edition.DTOs
         public string Name { get; set; }
         public string? Description { get; set; }
         public Guid Language { get; set; }
+        public List<FormInsertDTO> Forms { get; set; }
     }
 }

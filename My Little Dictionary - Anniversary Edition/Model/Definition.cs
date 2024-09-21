@@ -8,10 +8,7 @@
     {
         public string Expression { get; set; }
 
-        public Definition() : base()
-        {
-            
-        }
+        public Definition() : base() { }
         public Definition(string expr)
         {
             Expression = expr;

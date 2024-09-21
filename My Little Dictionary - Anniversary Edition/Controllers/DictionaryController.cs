@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using My_Little_Dictionary___Anniversary_Edition.DTOs;
-using My_Little_Dictionary___Anniversary_Edition.Interfaces;
+using My_Little_Dictionary___Anniversary_Edition.Services.Interfaces;
 
 namespace My_Little_Dictionary___Anniversary_Edition.Controllers
 {

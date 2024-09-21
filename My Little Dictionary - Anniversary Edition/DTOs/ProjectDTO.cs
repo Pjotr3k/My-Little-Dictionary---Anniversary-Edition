@@ -2,39 +2,37 @@
 
 namespace My_Little_Dictionary___Anniversary_Edition.DTOs
 {
-    public class LanguageDTO
+    public class ProjectDTO
     {
         public Guid ID { get; set; }
         public string Name { get; set; }
-        public List<string> OtherNames { get; set; } = new List<string>();
         public string Code { get; set; }
         public string Description { get; set; }
-        public LanguageDTO() { }
-        public LanguageDTO(Language model)
+        public LanguageDTO Language { get; set; }
+        public ProjectDTO() { }
+        public ProjectDTO(Project model)
         {
             ID = model.ID;
-            var names = model.Name
-                .Split("; ")
-                .Select(x => x.Trim());
-
-            Name = names.FirstOrDefault();
-            OtherNames = names.Skip(1).ToList();
+            Name = model.Name;
             Code = model.Code;
             Description = model.Description;
+            Language = new LanguageDTO(model.Language);
         }
     }
 
-    public class LanguageInsertDTO
+    public class ProjectInsertDTO
     {
         public string Name { get; set; }
         public string Code { get; set; }
-        public string? Description { get; set; } = "";
+        public string? Description { get; set; }
+        public Guid Language { get; set; }
 
-        public void GetData(Language model)
+        public void GetData(Project model, Language language)
         {
             model.Name = Name;
             model.Code = Code;
             model.Description = Description;
+            model.Language = language;
         }
     }
 }

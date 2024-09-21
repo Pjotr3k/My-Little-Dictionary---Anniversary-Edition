@@ -4,7 +4,7 @@
     {
         public string Name { get; set; }
         public string Description { get; set; }
-        public List<Entry> Entries { get; set; } = new List<Entry>();
+        public List<Lexeme> Lexemes { get; set; } = new List<Lexeme>();
 
         public Dictionary() : base()
         {

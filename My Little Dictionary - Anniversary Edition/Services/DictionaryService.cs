@@ -1,8 +1,8 @@
 ﻿using My_Little_Dictionary___Anniversary_Edition.Data;
 using My_Little_Dictionary___Anniversary_Edition.DTOs;
-using My_Little_Dictionary___Anniversary_Edition.Interfaces;
 using My_Little_Dictionary___Anniversary_Edition.Model;
 using My_Little_Dictionary___Anniversary_Edition.Services.Base;
+using My_Little_Dictionary___Anniversary_Edition.Services.Interfaces;
 
 namespace My_Little_Dictionary___Anniversary_Edition.Services
 {
@@ -34,15 +34,15 @@ namespace My_Little_Dictionary___Anniversary_Edition.Services
             return validation;
         }
 
-        public ValidationResponse<Entry> AddEntry(EntryInsertDTO request)
+        public ValidationResponse<Lexeme> AddEntry(EntryInsertDTO request)
         {
-            ValidationResponse<Entry> validation = new ValidationResponse<Entry>();
+            ValidationResponse<Lexeme> validation = new ValidationResponse<Lexeme>();
 
-            Entry entry = new Entry();
+            Lexeme entry = new Lexeme();
 
             List<Word> words = new List<Word>();
 
-            List<EntryDefinitionAssociation> definitionAssociations = new List<EntryDefinitionAssociation>();
+            List<LexemeDefinitionAssociation> definitionAssociations = new List<LexemeDefinitionAssociation>();
 
             foreach (var word in request.WordForms)
             {
@@ -55,7 +55,7 @@ namespace My_Little_Dictionary___Anniversary_Edition.Services
                 words.Add(new Word()
                 {
                     Expression = word.Value,
-                    Entry = entry,
+                    Lexeme = entry,
                     Form = form
                 });
             }
@@ -77,13 +77,13 @@ namespace My_Little_Dictionary___Anniversary_Edition.Services
                 }
                 
 
-                definitionAssociations.Add(new EntryDefinitionAssociation(entry, insert));
+                definitionAssociations.Add(new LexemeDefinitionAssociation(entry, insert));
             }
 
             if(validation.Errors.Any()) return validation;
 
             entry.Words = words;
-            entry.EntryDefinitions = definitionAssociations;
+            entry.LexemeDefinitions = definitionAssociations;
             validation.Result = entry;
 
             return validation;

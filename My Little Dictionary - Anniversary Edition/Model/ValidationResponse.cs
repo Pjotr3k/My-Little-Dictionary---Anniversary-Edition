@@ -34,7 +34,7 @@
             return this;
         }
 
-        public ValidationResponse<T> MergeValidation<U>(ValidationResponse<U> source)
+        public virtual ValidationResponse<T> MergeValidation<U>(ValidationResponse<U> source)
         {
             Notifications.AddRange(source.Notifications);
             Warnings.AddRange(source.Warnings);

@@ -12,8 +12,8 @@ using My_Little_Dictionary___Anniversary_Edition.Data;
 namespace My_Little_Dictionary___Anniversary_Edition.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20240824185627_RefreshToken")]
-    partial class RefreshToken
+    [Migration("20240903141951_NamesUpdate")]
+    partial class NamesUpdate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -229,16 +229,16 @@ namespace My_Little_Dictionary___Anniversary_Edition.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("EntryID")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Expression")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("LexemeID")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("ID");
 
-                    b.HasIndex("EntryID");
+                    b.HasIndex("LexemeID");
 
                     b.ToTable("Definition");
                 });
@@ -260,43 +260,6 @@ namespace My_Little_Dictionary___Anniversary_Edition.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Dictionary");
-                });
-
-            modelBuilder.Entity("My_Little_Dictionary___Anniversary_Edition.Model.Entry", b =>
-                {
-                    b.Property<Guid>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("DictionaryID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("DictionaryID");
-
-                    b.ToTable("Entry");
-                });
-
-            modelBuilder.Entity("My_Little_Dictionary___Anniversary_Edition.Model.EntryDefinitionAssociation", b =>
-                {
-                    b.Property<Guid>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("DefinitionID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("EntryID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("DefinitionID");
-
-                    b.HasIndex("EntryID");
-
-                    b.ToTable("EntryDefinitionAssociations");
                 });
 
             modelBuilder.Entity("My_Little_Dictionary___Anniversary_Edition.Model.Form", b =>
@@ -349,6 +312,43 @@ namespace My_Little_Dictionary___Anniversary_Edition.Migrations
                     b.ToTable("Language");
                 });
 
+            modelBuilder.Entity("My_Little_Dictionary___Anniversary_Edition.Model.Lexeme", b =>
+                {
+                    b.Property<Guid>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("DictionaryID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("DictionaryID");
+
+                    b.ToTable("Lexeme");
+                });
+
+            modelBuilder.Entity("My_Little_Dictionary___Anniversary_Edition.Model.LexemeDefinitionAssociation", b =>
+                {
+                    b.Property<Guid>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("DefinitionID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("EntryID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("DefinitionID");
+
+                    b.HasIndex("EntryID");
+
+                    b.ToTable("EntryDefinitionAssociations");
+                });
+
             modelBuilder.Entity("My_Little_Dictionary___Anniversary_Edition.Model.PartOfSpeech", b =>
                 {
                     b.Property<Guid>("ID")
@@ -359,7 +359,32 @@ namespace My_Little_Dictionary___Anniversary_Edition.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Forms")
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("ProjectID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("ProjectID");
+
+                    b.ToTable("PartOfSpeech");
+                });
+
+            modelBuilder.Entity("My_Little_Dictionary___Anniversary_Edition.Model.Project", b =>
+                {
+                    b.Property<Guid>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("LanguageID")
@@ -373,7 +398,7 @@ namespace My_Little_Dictionary___Anniversary_Edition.Migrations
 
                     b.HasIndex("LanguageID");
 
-                    b.ToTable("PartOfSpeech");
+                    b.ToTable("Project");
                 });
 
             modelBuilder.Entity("My_Little_Dictionary___Anniversary_Edition.Model.RefreshToken", b =>
@@ -382,10 +407,24 @@ namespace My_Little_Dictionary___Anniversary_Edition.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("Expires")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("Token")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<bool>("Used")
                         .HasColumnType("bit");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("ID");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("RefreshToken");
                 });
@@ -396,9 +435,6 @@ namespace My_Little_Dictionary___Anniversary_Edition.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("EntryID")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Expression")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -406,11 +442,14 @@ namespace My_Little_Dictionary___Anniversary_Edition.Migrations
                     b.Property<Guid>("FormID")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("LexemeID")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("ID");
 
-                    b.HasIndex("EntryID");
-
                     b.HasIndex("FormID");
+
+                    b.HasIndex("LexemeID");
 
                     b.ToTable("Word");
                 });
@@ -468,19 +507,30 @@ namespace My_Little_Dictionary___Anniversary_Edition.Migrations
 
             modelBuilder.Entity("My_Little_Dictionary___Anniversary_Edition.Model.Definition", b =>
                 {
-                    b.HasOne("My_Little_Dictionary___Anniversary_Edition.Model.Entry", null)
+                    b.HasOne("My_Little_Dictionary___Anniversary_Edition.Model.Lexeme", null)
                         .WithMany("Definitions")
-                        .HasForeignKey("EntryID");
+                        .HasForeignKey("LexemeID");
                 });
 
-            modelBuilder.Entity("My_Little_Dictionary___Anniversary_Edition.Model.Entry", b =>
+            modelBuilder.Entity("My_Little_Dictionary___Anniversary_Edition.Model.Form", b =>
+                {
+                    b.HasOne("My_Little_Dictionary___Anniversary_Edition.Model.PartOfSpeech", "PartOfSpeech")
+                        .WithMany("Forms")
+                        .HasForeignKey("PartOfSpeechID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("PartOfSpeech");
+                });
+
+            modelBuilder.Entity("My_Little_Dictionary___Anniversary_Edition.Model.Lexeme", b =>
                 {
                     b.HasOne("My_Little_Dictionary___Anniversary_Edition.Model.Dictionary", null)
-                        .WithMany("Entries")
+                        .WithMany("Lexemes")
                         .HasForeignKey("DictionaryID");
                 });
 
-            modelBuilder.Entity("My_Little_Dictionary___Anniversary_Edition.Model.EntryDefinitionAssociation", b =>
+            modelBuilder.Entity("My_Little_Dictionary___Anniversary_Edition.Model.LexemeDefinitionAssociation", b =>
                 {
                     b.HasOne("My_Little_Dictionary___Anniversary_Edition.Model.Definition", "Definition")
                         .WithMany()
@@ -488,8 +538,8 @@ namespace My_Little_Dictionary___Anniversary_Edition.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("My_Little_Dictionary___Anniversary_Edition.Model.Entry", "Entry")
-                        .WithMany("EntryDefinitions")
+                    b.HasOne("My_Little_Dictionary___Anniversary_Edition.Model.Lexeme", "Entry")
+                        .WithMany("LexemeDefinitions")
                         .HasForeignKey("EntryID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -499,18 +549,18 @@ namespace My_Little_Dictionary___Anniversary_Edition.Migrations
                     b.Navigation("Entry");
                 });
 
-            modelBuilder.Entity("My_Little_Dictionary___Anniversary_Edition.Model.Form", b =>
+            modelBuilder.Entity("My_Little_Dictionary___Anniversary_Edition.Model.PartOfSpeech", b =>
                 {
-                    b.HasOne("My_Little_Dictionary___Anniversary_Edition.Model.PartOfSpeech", "PartOfSpeech")
+                    b.HasOne("My_Little_Dictionary___Anniversary_Edition.Model.Project", "Project")
                         .WithMany()
-                        .HasForeignKey("PartOfSpeechID")
+                        .HasForeignKey("ProjectID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("PartOfSpeech");
+                    b.Navigation("Project");
                 });
 
-            modelBuilder.Entity("My_Little_Dictionary___Anniversary_Edition.Model.PartOfSpeech", b =>
+            modelBuilder.Entity("My_Little_Dictionary___Anniversary_Edition.Model.Project", b =>
                 {
                     b.HasOne("My_Little_Dictionary___Anniversary_Edition.Model.Language", "Language")
                         .WithMany()
@@ -521,37 +571,51 @@ namespace My_Little_Dictionary___Anniversary_Edition.Migrations
                     b.Navigation("Language");
                 });
 
+            modelBuilder.Entity("My_Little_Dictionary___Anniversary_Edition.Model.RefreshToken", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("My_Little_Dictionary___Anniversary_Edition.Model.Word", b =>
                 {
-                    b.HasOne("My_Little_Dictionary___Anniversary_Edition.Model.Entry", "Entry")
-                        .WithMany("Words")
-                        .HasForeignKey("EntryID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("My_Little_Dictionary___Anniversary_Edition.Model.Form", "Form")
                         .WithMany()
                         .HasForeignKey("FormID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Entry");
+                    b.HasOne("My_Little_Dictionary___Anniversary_Edition.Model.Lexeme", "Lexeme")
+                        .WithMany("Words")
+                        .HasForeignKey("LexemeID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Form");
+
+                    b.Navigation("Lexeme");
                 });
 
             modelBuilder.Entity("My_Little_Dictionary___Anniversary_Edition.Model.Dictionary", b =>
                 {
-                    b.Navigation("Entries");
+                    b.Navigation("Lexemes");
                 });
 
-            modelBuilder.Entity("My_Little_Dictionary___Anniversary_Edition.Model.Entry", b =>
+            modelBuilder.Entity("My_Little_Dictionary___Anniversary_Edition.Model.Lexeme", b =>
                 {
                     b.Navigation("Definitions");
 
-                    b.Navigation("EntryDefinitions");
+                    b.Navigation("LexemeDefinitions");
 
                     b.Navigation("Words");
+                });
+
+            modelBuilder.Entity("My_Little_Dictionary___Anniversary_Edition.Model.PartOfSpeech", b =>
+                {
+                    b.Navigation("Forms");
                 });
 #pragma warning restore 612, 618
         }
