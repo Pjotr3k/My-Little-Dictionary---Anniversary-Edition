@@ -7,6 +7,7 @@ using My_Little_Dictionary___Anniversary_Edition.Services.Interfaces;
 
 namespace My_Little_Dictionary___Anniversary_Edition.Controllers
 {
+    [Authorize]
     [Route("[controller]/[Action]")]
     [ApiController]
     public class LinguisticsController : ControllerBase
@@ -48,6 +49,14 @@ namespace My_Little_Dictionary___Anniversary_Edition.Controllers
             return Ok(result);
         }
 
+        [HttpGet("{projectCode}")]
+        [AllowAnonymous]
+        public IActionResult Project([FromRoute] string projectCode)
+        {
+            var result = _linguisticsService.GetProjectByCode(projectCode);
+            return Ok(result);
+        }
+
         [HttpPost]
         public IActionResult Projects([FromBody] PaginationRequestDTO request)
         {
@@ -67,7 +76,17 @@ namespace My_Little_Dictionary___Anniversary_Edition.Controllers
         {
             var result = _linguisticsService
                 .GetPartOfSpeechById(id)
-                .ToDTO();
+                .Transform(item => new PartOfSpeechDTO(item));
+
+            return Ok(result);
+        }
+
+        [HttpGet("{projectCode}/{posName}")]
+        public IActionResult PartOfSpeech([FromRoute] string projectCode, string posName)
+        {
+            var result = _linguisticsService
+                .GetPartOfSpeechByName(posName, projectCode)
+                .Transform(item => new PartOfSpeechDTO(item));
 
             return Ok(result);
         }
@@ -75,15 +94,8 @@ namespace My_Little_Dictionary___Anniversary_Edition.Controllers
         [HttpPost("{code}")]
         public IActionResult PartOfSpeech([FromBody] PaginationRequestDTO request, [FromRoute] string code)
         {
-            PaginationResponse<PartOfSpeechDTO> result;
-
-            var projectVal = _linguisticsService.GetProjectByCode(code);
-            var (project, _) = projectVal;
-
-            if (project == null || projectVal.Errors.Any())
-                return Ok(projectVal);
-            result = _linguisticsService
-                .GetPartsOfSpeechByProject(request, project)
+            var result = _linguisticsService
+                .GetPartsOfSpeechByProject(request, code)
                 .Select(pos => new PartOfSpeechDTO(pos));
 
             return Ok(result);

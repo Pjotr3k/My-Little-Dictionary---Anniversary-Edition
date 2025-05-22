@@ -6,7 +6,8 @@ namespace My_Little_Dictionary___Anniversary_Edition.DTOs
     {
         public Guid ID { get; set; }
         public string Name { get; set; }
-        public string? Description { get; set; }
+        public string Description { get; set; }
+        public PartOfSpeechDescrDTO Data { get; set; }
         public Guid? Language { get; set; }
 
         public PartOfSpeechDTO() { }
@@ -15,15 +16,17 @@ namespace My_Little_Dictionary___Anniversary_Edition.DTOs
             ID = model.ID;
             Name = model.Name;
             Description = model.Description;
+            Data = new PartOfSpeechDescrDTO(model.Name, model.Description);
             Language = model.Project?.ID;
         }
     }
 
+    public record PartOfSpeechDescrDTO(string Name, string? Description);
+
     public class PartOfSpeechInsertDTO
     {
-        public string Name { get; set; }
-        public string? Description { get; set; }
-        public Guid Language { get; set; }
+        public Guid ProjectID { get; set; }
+        public PartOfSpeechDescrDTO Data { get; set; }
         public List<FormInsertDTO> Forms { get; set; }
     }
 }

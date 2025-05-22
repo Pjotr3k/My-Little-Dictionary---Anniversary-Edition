@@ -117,18 +117,18 @@ namespace My_Little_Dictionary___Anniversary_Edition.Services
         {
             ValidationResponse<PartOfSpeech> validation = new ValidationResponse<PartOfSpeech>();
 
-            Project language = _context.Project.FirstOrDefault(x => x.ID == request.Language);
+            Project language = _context.Project.FirstOrDefault(x => x.ID == request.ProjectID);
 
             if (language == null)
             {
-                validation.Errors.Add(string.Format("No language with id {0}", request.Language.ToString()));
+                validation.Errors.Add(string.Format("No language with id {0}", request.ProjectID.ToString()));
                 return validation;
             }
 
             PartOfSpeech pos = new PartOfSpeech()
             {
-                Name = request.Name,
-                Description = request.Description != null ? request.Description : "",
+                Name = request.Data.Name,
+                Description = request.Data.Description != null ? request.Data.Description : "",
                 Project = language,
             };
 
@@ -282,7 +282,6 @@ namespace My_Little_Dictionary___Anniversary_Edition.Services
 
         }
 
-
         public ValidationResponse<PartOfSpeech> GetPartOfSpeechById(Guid id)
         {
             ValidationResponse<PartOfSpeech> validation = new ValidationResponse<PartOfSpeech>();
@@ -295,15 +294,25 @@ namespace My_Little_Dictionary___Anniversary_Edition.Services
             return validation;
         }
 
-        public ValidationResponse<List<PartOfSpeech>> GetPartsOfSpeechByLanguageCode(string code)
+        public ValidationResponse<PartOfSpeech> GetPartOfSpeechByName(string posName, string projectCode)
         {
-            ValidationResponse<List<PartOfSpeech>> validation = new ValidationResponse<List<PartOfSpeech>>();
-            validation.Result = _context.PartOfSpeech
-                .Where(item => item.Project.Code == code)
-                .ToList();
+            ValidationResponse<PartOfSpeech> validation = new ValidationResponse<PartOfSpeech>();
 
-            if (validation.Result == null || !validation.Result.Any())
-                validation.Notifications.Add("Search result is empty");
+            var projectVal = GetProjectByCode(projectCode);
+            var (project, _) = projectVal;
+
+            validation.MergeValidation(projectVal);
+
+            if (project == null || projectVal.Errors.Any())
+                return validation.MergeValidation(projectVal);
+
+            validation.Result = _context.PartOfSpeech
+                .FirstOrDefault(x => x.Project == project && x.Name == posName);
+
+            if (validation.Result == null)
+            {
+                validation.Errors.Add("No part of speech with that name");
+            }
 
             return validation;
         }
@@ -316,6 +325,22 @@ namespace My_Little_Dictionary___Anniversary_Edition.Services
                 .ToList();
 
             return validation;
+        }
+
+        public PaginationResponse<PartOfSpeech> GetPartsOfSpeechByProject(PaginationRequestDTO? request, string projectCode)
+        {
+            PaginationResponse<PartOfSpeech> validation = new PaginationResponse<PartOfSpeech>(request);
+
+            var projectVal = GetProjectByCode(projectCode);
+            var (project, _) = projectVal;
+
+            validation.MergeValidation(projectVal);
+
+            if (project == null || projectVal.Errors.Any())
+                return (PaginationResponse<PartOfSpeech>)validation
+                    .MergeValidation(projectVal);
+
+            return GetPartsOfSpeechByProject(request, project);
         }
 
         public PaginationResponse<PartOfSpeech> GetPartsOfSpeechByProject(PaginationRequestDTO? request, Project project)

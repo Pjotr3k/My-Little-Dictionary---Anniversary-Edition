@@ -5,22 +5,24 @@ namespace My_Little_Dictionary___Anniversary_Edition.Services.Interfaces
 {
     public interface ILinguisticsService
     {
-        public ValidationResponse<Language> GetLanguageById(Guid id);
-        public PaginationResponse<LanguageDTO> GetLanguages(PaginationRequestDTO? request);
-        public PaginationResponse<ProjectDTO> GetProjects(PaginationRequestDTO? request = null);
-        public ValidationResponse<Project> AddProject(ProjectInsertDTO request);
-        public ValidationResponse<Language> AddLanguage(LanguageInsertDTO request);
-        public ValidationResponse<PartOfSpeech> GetPartOfSpeechById(Guid id);
-        public PaginationResponse<PartOfSpeech> GetPartsOfSpeechByProject(PaginationRequestDTO? request, Project project);
-        public ValidationResponse<Project> GetProjectById(Guid id);
-        public ValidationResponse<Project> GetProjectByCode(string code);
-        public ValidationResponse<PartOfSpeech> AddPartOfSpeech(PartOfSpeechInsertDTO request);
-        public ValidationResponse<Form> GetFormById(Guid id);
-        public ValidationResponse<List<Form>> GetAllForms();
-        public ValidationResponse<List<Form>> GetFormsByPos(Guid posId);
-        //public ValidationResponse<Form> AddForm(FormInsertDTO request, PartOfSpeech pos);
-        //public ValidationResponse<List<Form>> BulkAddForm(List<FormInsertDTO> request);
-        public void CSVImportLangs();
+        ValidationResponse<Language> GetLanguageById(Guid id);
+        PaginationResponse<LanguageDTO> GetLanguages(PaginationRequestDTO? request);
+        PaginationResponse<ProjectDTO> GetProjects(PaginationRequestDTO? request = null);
+        ValidationResponse<Project> AddProject(ProjectInsertDTO request);
+        ValidationResponse<Language> AddLanguage(LanguageInsertDTO request);
+        ValidationResponse<PartOfSpeech> GetPartOfSpeechById(Guid id);
+        ValidationResponse<PartOfSpeech> GetPartOfSpeechByName(string posName, string projectCode);
+        PaginationResponse<PartOfSpeech> GetPartsOfSpeechByProject(PaginationRequestDTO? request, Project project);
+        PaginationResponse<PartOfSpeech> GetPartsOfSpeechByProject(PaginationRequestDTO? request, string projectCode);
+        ValidationResponse<Project> GetProjectById(Guid id);
+        ValidationResponse<Project> GetProjectByCode(string code);
+        ValidationResponse<PartOfSpeech> AddPartOfSpeech(PartOfSpeechInsertDTO request);
+        ValidationResponse<Form> GetFormById(Guid id);
+        ValidationResponse<List<Form>> GetAllForms();
+        ValidationResponse<List<Form>> GetFormsByPos(Guid posId);
+        //ValidationResponse<Form> AddForm(FormInsertDTO request, PartOfSpeech pos);
+        //ValidationResponse<List<Form>> BulkAddForm(List<FormInsertDTO> request);
+        void CSVImportLangs();
 
 
     }

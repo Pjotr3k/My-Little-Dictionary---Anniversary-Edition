@@ -6,13 +6,22 @@ namespace My_Little_Dictionary___Anniversary_Edition.Mappers
 {
     public static class ValidationMapper
     {
-        public static ValidationResponse<PartOfSpeechDTO> ToDTO(this ValidationResponse<PartOfSpeech> source)
+        public static ValidationResponse<TResult> Transform<TSource, TResult>(this ValidationResponse<TSource> source, Func<TSource, TResult> selector)
         {
-            ValidationResponse<PartOfSpeechDTO> result = new ValidationResponse<PartOfSpeechDTO>();
+            ValidationResponse<TResult> result = new ValidationResponse<TResult>();
             result.MergeValidation(source);
 
             if (source.Result != null)
-                result.Result = new PartOfSpeechDTO(source.Result);
+            {
+                try
+                {
+                    result.Result = selector(source.Result);
+                }
+                catch (Exception ex)
+                {
+                    result.Errors.Add(ex.Message);
+                }
+            }
 
             return result;
         }
