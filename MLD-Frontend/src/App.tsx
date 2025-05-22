@@ -3,6 +3,7 @@ import { Suspense, lazy } from "react";
 import AppContainer from "./components/app-container/AppContainer";
 import Loader from "./components/Loader";
 import LoginContainer from "./pages/authentication/LoginContainer";
+import ProjectContainer from "./pages/project/ProjectContainer";
 
 const Logout = lazy(() => import("./pages/authentication/Logout"));
 const Project = lazy(() => import("./pages/project/Project"));
@@ -84,9 +85,7 @@ const projectRoutes: RouteProps[] = [
     element:  <Suspense fallback={<Loader />}><TextEntry /></Suspense>,
     path: "library/:text"
   },
-
 ]
-
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -96,9 +95,9 @@ const router = createBrowserRouter(
       </Route>
       <Route path="/" element={<AppContainer />}>
         {mapRoutes(routeList)}
-      </Route>
-      <Route path="/:project" element={<AppContainer />}>
-        {mapRoutes(projectRoutes)}
+        <Route path="/:project" element={<ProjectContainer />}>
+          {mapRoutes(projectRoutes)}
+        </Route>
       </Route>
 
     </>
@@ -107,7 +106,6 @@ const router = createBrowserRouter(
 function App() {
   return <><RouterProvider router={router} /></>
 }
-
 
 function mapRoutes(routes: RouteProps[]) {
   return routes.map(route => <Route key={route.path} {...route}/>)

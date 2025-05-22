@@ -2,8 +2,8 @@ import MenuItem, { MenuItemProps } from "./MenuItem";
 
 const menuItems: Array<MenuItemProps> = [
     {
-        to: "/",
-        label: "Home"
+        to: "",
+        label: "Project"
     },
    {
         to: "/auth/logout",

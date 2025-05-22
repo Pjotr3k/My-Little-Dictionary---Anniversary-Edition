@@ -6,9 +6,9 @@ import getAxiosInstance from "../../helpers/axios-instance";
 export default function useForms(pos?: string){
     const axiosInstance = getAxiosInstance();
 
-    const params = pos ? `?code=${encodeURIComponent(pos)}` : ""
+    const params = pos ? `?pos=${encodeURIComponent(pos)}` : ""
     return useQuery<ApiResponse<Array<PartOfSpeech>>>({
-        queryKey: ["forms"],
+        queryKey: ["forms", params],
         queryFn: async () =>
             axiosInstance.get("Linguistics/Form" + params)
         .then((res) => res.data)        

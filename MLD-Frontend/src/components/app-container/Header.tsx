@@ -1,3 +1,4 @@
+import Breadcrumbs from "./Breadcrumbs"
 import HeaderMenu from "./HeaderMenu"
 
 export default function Header(){
@@ -8,5 +9,7 @@ export default function Header(){
         </div>
         {/* <ProjectData /> */}
         <HeaderMenu />
+        <Breadcrumbs />
+
         </div>    
 }
