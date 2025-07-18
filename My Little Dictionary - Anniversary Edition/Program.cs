@@ -22,9 +22,11 @@ builder.Services.AddCors(opt =>
 
 builder.Services.AddHttpContextAccessor();
 
-builder.Services.AddScoped<IDictionaryService, DictionaryService>();
+builder.Services.AddScoped<ILanguageService, LanguageService>();
+builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<ILinguisticsService, LinguisticsService>();
 builder.Services.AddScoped<ISecurityService, SecurityService>();
+builder.Services.AddScoped<IDictionaryService, DictionaryService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

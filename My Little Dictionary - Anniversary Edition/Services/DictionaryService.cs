@@ -3,110 +3,79 @@ using My_Little_Dictionary___Anniversary_Edition.DTOs;
 using My_Little_Dictionary___Anniversary_Edition.Model;
 using My_Little_Dictionary___Anniversary_Edition.Services.Base;
 using My_Little_Dictionary___Anniversary_Edition.Services.Interfaces;
+using My_Little_Dictionary___Anniversary_Edition.Validation;
 
 namespace My_Little_Dictionary___Anniversary_Edition.Services
 {
     public class DictionaryService : BaseContextService, IDictionaryService
     {
-        public DictionaryService(ApplicationDBContext context) : base(context)
+        private readonly ILinguisticsService _linguisticsService;
+        public DictionaryService(ApplicationDBContext context, ILinguisticsService linguisticsService) : base(context)
         {
-
+            _linguisticsService = linguisticsService;
         }
-        public ValidationResponse<Dictionary> AddDictionary(DictionaryInsertDTO request)
+
+        public Lexeme AddEntry(EntryInsertDTO request)
         {
-            ValidationResponse<Dictionary> validation = new ValidationResponse<Dictionary>();
+            request.Validate();
 
-            request.Validate(validation);
+            var dictionary = _linguisticsService.GetDictionaryById(request.DictionaryId)
+                .ValidateOnNull(request.DictionaryId, "Dictionary");
 
-            if (validation.Errors.Any())
-                return validation;
-
-            Dictionary dictionary = new Dictionary()
+            Lexeme entry = new Lexeme()
             {
-                Name = request.Name,
-                Description = request.Description
+                Dictionary = dictionary
             };
-
-            _context.Add(dictionary);
-            _context.SaveChanges();
-            validation.Result = dictionary;
-
-            return validation;
-        }
-
-        public ValidationResponse<Lexeme> AddEntry(EntryInsertDTO request)
-        {
-            ValidationResponse<Lexeme> validation = new ValidationResponse<Lexeme>();
-
-            Lexeme entry = new Lexeme();
 
             List<Word> words = new List<Word>();
 
-            List<LexemeDefinitionAssociation> definitionAssociations = new List<LexemeDefinitionAssociation>();
+            //List<LexemeDefinitionAssociation> definitionAssociations = new List<LexemeDefinitionAssociation>();
+            List<string> invalidItems = [];
 
             foreach (var word in request.WordForms)
             {
-                Form form = _context.Form.FirstOrDefault(f => f.ID == word.Key);
-                if (form == null)
+                try
                 {
-                    validation.Errors.Add(string.Format("Form with ID {0} does not exist", word.Key.ToString()));
+                    Form form = _linguisticsService.GetFormById(word.Key)
+                        .ValidateOnNull(word.Key, "Form");
+
+                    words.Add(new()
+                    {
+                        Expression = word.Value,
+                        Lexeme = entry,
+                        Form = form
+                    });
+                }
+                catch (ValidationException vex)
+                {
+                    invalidItems.AddRange(vex.Errors);
                     continue;
                 }
-                words.Add(new Word()
+                catch
                 {
-                    Expression = word.Value,
-                    Lexeme = entry,
-                    Form = form
-                });
+                    throw;
+                }
+
             }
+
+            List<Definition> definitions = [];
 
             foreach (var def in request.Definitions)
             {
-                Definition insert = null;
-                if (def.ID != null)
-                {
-                    insert = _context.Definition.FirstOrDefault(d => d.ID == def.ID);
-                    if (insert == null)
-                    {
-                        validation.Errors.Add(string.Format("Form with ID {0} does not exist", def.ID.ToString()));
-                        continue;
-                    }
-                }
-                else if (string.IsNullOrEmpty(def.Expression)){
-                    insert = new Definition(def.Expression);
-                }
-                
+                Definition insert = def.ID != null
+                    ? _context.Definition.GetById(def.ID.Value).ValidateOnNull(def.ID, "Definition")
+                    : new Definition(def.Expression);
 
-                definitionAssociations.Add(new LexemeDefinitionAssociation(entry, insert));
+                definitions.Add(insert);
             }
-
-            if(validation.Errors.Any()) return validation;
 
             entry.Words = words;
-            entry.LexemeDefinitions = definitionAssociations;
-            validation.Result = entry;
+            entry.Definitions = definitions;
 
-            return validation;
-        }
+            _context.Add(entry);
+            _context.SaveChanges();
 
-        public ValidationResponse<List<Dictionary>> GetAllDictionaries()
-        {
-            ValidationResponse<List<Dictionary>> validation = new ValidationResponse<List<Dictionary>>();
-            validation.Result = _context.Dictionary.ToList();
-
-            return validation;
-        }
-
-        public ValidationResponse<Dictionary> GetDictionaryById(Guid id)
-        {
-            ValidationResponse<Dictionary> validation = new ValidationResponse<Dictionary>();
-            validation.Result = _context.Dictionary.FirstOrDefault(x => x.ID == id);
-            if (validation.Result == null)
-            {
-                validation.Errors.Add("No dictionary with that ID");
-            }
-
-            return validation;
+            return entry;
         }
     }
 }

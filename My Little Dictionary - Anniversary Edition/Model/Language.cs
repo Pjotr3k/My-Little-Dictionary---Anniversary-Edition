@@ -8,6 +8,8 @@ namespace My_Little_Dictionary___Anniversary_Edition.Model
         public string Code { get; set; }
         public string Description { get; set; }
 
+        public IComparable OrderDefault => Code;
+
         public bool MatchSearch(string searchValue) => 
             Name.ToLower().Contains(searchValue) 
             || Code.ToLower().Contains(searchValue) 

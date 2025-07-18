@@ -1,15 +1,15 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using My_Little_Dictionary___Anniversary_Edition.Data;
 using My_Little_Dictionary___Anniversary_Edition.DTOs.Security;
 using My_Little_Dictionary___Anniversary_Edition.Model;
 using My_Little_Dictionary___Anniversary_Edition.Services.Base;
 using My_Little_Dictionary___Anniversary_Edition.Services.Interfaces;
-using System.Collections.Specialized;
+using My_Little_Dictionary___Anniversary_Edition.Validation;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.EntityFrameworkCore;
 
 namespace My_Little_Dictionary___Anniversary_Edition.Services
 {
@@ -40,47 +40,23 @@ namespace My_Little_Dictionary___Anniversary_Edition.Services
         }
 
 
-        public async Task<ValidationResponse<LoginResponseDTO>> Login(LoginRequestDTO request)
+        public async Task<LoginResponseDTO> Login(LoginRequestDTO request)
         {
-            ValidationResponse<LoginResponseDTO> validation = new ValidationResponse<LoginResponseDTO>();
-
-            var user = await _userManager.FindByNameAsync(request.UserName);
-
-            if (user == null)
-            {
-                validation.Errors.Add("User not found");
-                return validation;
-            }
+            var user = await _userManager.FindByNameAsync(request.UserName)
+                .ValidateOnNull(request.UserName, "User", "ID");
 
             bool isPasswordValid = await _userManager.CheckPasswordAsync(user, request.Password);
 
             if (!isPasswordValid)
-                return validation;
+                throw new ValidationException("The password is incorrect");
 
-            return validation.Merge(GenerateBearerToken(user));
+
+            return GenerateBearerToken(user);
         }
 
-        public async Task<ValidationResponse<LoginResponseDTO>> Register(RegistrationRequestDTO request)
+        public async Task<LoginResponseDTO> Register(RegistrationRequestDTO request)
         {
-            ValidationResponse<LoginResponseDTO> validation = new ValidationResponse<LoginResponseDTO>();
-
-            request.Validate(validation);
-
-            bool usernameExists = _context.Users.Any(u => u.UserName == request.UserName);
-            if (usernameExists)
-            {
-                validation.Errors.Add("User with this name already exists");
-            }
-
-            bool emailExists = _context.Users.Any(u => u.Email == request.Email);
-
-            if (emailExists)
-            {
-                validation.Errors.Add("User with this email already exists");
-            }
-
-            if (validation.Errors.Count > 0)
-                return validation;
+            ValidateRegistrationRequest(request);
 
             IdentityUser user = new IdentityUser()
             {
@@ -99,47 +75,70 @@ namespace My_Little_Dictionary___Anniversary_Edition.Services
                     Password = request.Password
                 });
 
-                validation.Merge(loginResult);
+                return loginResult;
             }
             else
             {
-                validation.Errors.AddRange(userResult.Errors.Select(err => err.Description));
+                throw new ValidationException(userResult.Errors.Select(err => err.Description).ToList());
             }
-
-            return validation;
         }
 
-        public async Task<ValidationResponse<LoginResponseDTO>> GetBearerWithRefresh(Guid refreshToken)
+        private void ValidateRegistrationRequest(RegistrationRequestDTO request)
         {
-            ValidationResponse<LoginResponseDTO> validation = new ValidationResponse<LoginResponseDTO>();
+            ValidationHelper.ValidateSequence(
+                () =>
+                {
+                    bool usernameExists = _context.Users.Any(u => u.UserName == request.UserName);
+                    if (usernameExists)
+                    {
+                        throw new ValidationException("User with this name already exists");
+                    }
+                }, 
+                () =>
+                {
+                    bool emailExists = _context.Users.Any(u => u.Email == request.Email);
 
+                    if (emailExists)
+                    {
+                        throw new ValidationException("User with this email already exists");
+                    }
+                },
+                () =>
+                {
+                    if (request.Password != request.PasswordConfirm)
+                        throw new ValidationException("Passwords are different");
+                },
+                () =>
+                {
+                    if (request.Email != request.EmailConfirm)
+                        throw new ValidationException("Emails are different");
+                }
+                );
+        }
+
+        public async Task<LoginResponseDTO> GetBearerWithRefresh(Guid refreshToken)
+        {
             RefreshToken refreshResult = _context.RefreshToken
                 .Include(item => item.User)
                 .FirstOrDefault(token => token.Token == refreshToken);
 
             if (refreshResult == null || !refreshResult.Valid)
             {
-                validation.Errors.Add("Refresh token not found");
-                return validation;
+                throw new ValidationException("Refresh token not found");
             }
 
-            refreshResult.Use();
+            refreshResult.Use(_context);
+            
 
-            return validation.Merge(GenerateBearerToken(refreshResult.User));
+            return GenerateBearerToken(refreshResult.User);
         }
 
-        public ValidationResponse<IdentityUser> GetUserByName(string name)
+        public IdentityUser GetUserByName(string name)
         {
-            ValidationResponse<IdentityUser> validation = new ValidationResponse<IdentityUser>();
-            validation.Result = _context.Users.FirstOrDefault(u => u.UserName == name);
-            if (validation.Result == null)
-            {
-                validation.Errors.Add("User not found");
-            }
-            return validation;
+            return _context.Users.FirstOrDefault(u => u.UserName == name);
         }
 
-        public ValidationResponse<LoginResponseDTO> GenerateBearerToken(IdentityUser user)
+        public LoginResponseDTO GenerateBearerToken(IdentityUser user)
         {
             var authClaims = new[]
                 {
@@ -159,19 +158,19 @@ namespace My_Little_Dictionary___Anniversary_Edition.Services
                 );
 
             string bearer = new JwtSecurityTokenHandler().WriteToken(token);
-            var (refreshToken, _) = GenerateRefreshToken(user);
+            var refreshToken = GenerateRefreshToken(user);
 
-            return new ValidationResponse<LoginResponseDTO>(new LoginResponseDTO(bearer, token.ValidTo, refreshToken));
+            return new LoginResponseDTO(bearer, token.ValidTo, refreshToken);
         }
 
-        public ValidationResponse<Guid> GenerateRefreshToken(IdentityUser user)
+        public Guid GenerateRefreshToken(IdentityUser user)
         {
             RefreshToken refreshToken = new RefreshToken(user, _configuration);
 
             _context.Add(refreshToken);
             _context.SaveChanges();
 
-            return new ValidationResponse<Guid>(refreshToken.Token);
+            return refreshToken.Token;
         }
     }
 }

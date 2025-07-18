@@ -5,25 +5,16 @@ namespace My_Little_Dictionary___Anniversary_Edition.Services.Interfaces
 {
     public interface ILinguisticsService
     {
-        ValidationResponse<Language> GetLanguageById(Guid id);
-        PaginationResponse<LanguageDTO> GetLanguages(PaginationRequestDTO? request);
-        PaginationResponse<ProjectDTO> GetProjects(PaginationRequestDTO? request = null);
-        ValidationResponse<Project> AddProject(ProjectInsertDTO request);
-        ValidationResponse<Language> AddLanguage(LanguageInsertDTO request);
-        ValidationResponse<PartOfSpeech> GetPartOfSpeechById(Guid id);
-        ValidationResponse<PartOfSpeech> GetPartOfSpeechByName(string posName, string projectCode);
-        PaginationResponse<PartOfSpeech> GetPartsOfSpeechByProject(PaginationRequestDTO? request, Project project);
-        PaginationResponse<PartOfSpeech> GetPartsOfSpeechByProject(PaginationRequestDTO? request, string projectCode);
-        ValidationResponse<Project> GetProjectById(Guid id);
-        ValidationResponse<Project> GetProjectByCode(string code);
-        ValidationResponse<PartOfSpeech> AddPartOfSpeech(PartOfSpeechInsertDTO request);
-        ValidationResponse<Form> GetFormById(Guid id);
-        ValidationResponse<List<Form>> GetAllForms();
-        ValidationResponse<List<Form>> GetFormsByPos(Guid posId);
-        //ValidationResponse<Form> AddForm(FormInsertDTO request, PartOfSpeech pos);
-        //ValidationResponse<List<Form>> BulkAddForm(List<FormInsertDTO> request);
-        void CSVImportLangs();
-
-
+        Lexicon AddDictionary(LexiconInsertDTO request);
+        Lexicon AddDictionary(LexiconDataDTO request, Project project, Language language);
+        PartOfSpeech AddPartOfSpeech(PartOfSpeechInsertDTO request);
+        PaginationResult<PartOfSpeech> GetPartsOfSpeechByLanguage(PaginationRequest? request, Guid projectID);
+        PartOfSpeech GetPartOfSpeechByName(string posName, Guid dictionaryId);
+        Form GetFormById(Guid id);
+        Lexicon GetDictionaryById(Guid id);
+        PaginationResult<PartOfSpeech> GetPartsOfSpeechByDictionary(PaginationRequest? request, Guid dictionaryId);
+        PaginationResult<PartOfSpeech> GetPartsOfSpeechByDictionary(PaginationRequest? request, Lexicon dictionary);
+        PartOfSpeech GetPartOfSpeechById(Guid id);
+        List<Form> GetFormsByPos(Guid posId);
     }
 }

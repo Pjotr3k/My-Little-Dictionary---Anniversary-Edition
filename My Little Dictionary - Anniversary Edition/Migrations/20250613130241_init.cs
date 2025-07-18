@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace My_Little_Dictionary___Anniversary_Edition.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -51,19 +51,6 @@ namespace My_Little_Dictionary___Anniversary_Edition.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Dictionary",
-                columns: table => new
-                {
-                    ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Dictionary", x => x.ID);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Language",
                 columns: table => new
                 {
@@ -75,6 +62,20 @@ namespace My_Little_Dictionary___Anniversary_Edition.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Language", x => x.ID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Project",
+                columns: table => new
+                {
+                    ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Project", x => x.ID);
                 });
 
             migrationBuilder.CreateTable(
@@ -205,11 +206,38 @@ namespace My_Little_Dictionary___Anniversary_Edition.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Dictionary",
+                columns: table => new
+                {
+                    ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProjectID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    LanguageID = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Dictionary", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Dictionary_Language_LanguageID",
+                        column: x => x.LanguageID,
+                        principalTable: "Language",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Dictionary_Project_ProjectID",
+                        column: x => x.ProjectID,
+                        principalTable: "Project",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Lexeme",
                 columns: table => new
                 {
                     ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    DictionaryID = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    DictionaryID = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -218,26 +246,27 @@ namespace My_Little_Dictionary___Anniversary_Edition.Migrations
                         name: "FK_Lexeme_Dictionary_DictionaryID",
                         column: x => x.DictionaryID,
                         principalTable: "Dictionary",
-                        principalColumn: "ID");
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Project",
+                name: "PartOfSpeech",
                 columns: table => new
                 {
                     ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Position = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LanguageID = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    DictionaryID = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Project", x => x.ID);
+                    table.PrimaryKey("PK_PartOfSpeech", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_Project_Language_LanguageID",
-                        column: x => x.LanguageID,
-                        principalTable: "Language",
+                        name: "FK_PartOfSpeech_Dictionary_DictionaryID",
+                        column: x => x.DictionaryID,
+                        principalTable: "Dictionary",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -258,52 +287,6 @@ namespace My_Little_Dictionary___Anniversary_Edition.Migrations
                         column: x => x.LexemeID,
                         principalTable: "Lexeme",
                         principalColumn: "ID");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PartOfSpeech",
-                columns: table => new
-                {
-                    ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LanguageID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Forms = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PartOfSpeech", x => x.ID);
-                    table.ForeignKey(
-                        name: "FK_PartOfSpeech_Project_LanguageID",
-                        column: x => x.LanguageID,
-                        principalTable: "Project",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "EntryDefinitionAssociations",
-                columns: table => new
-                {
-                    ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    EntryID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    DefinitionID = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_EntryDefinitionAssociations", x => x.ID);
-                    table.ForeignKey(
-                        name: "FK_EntryDefinitionAssociations_Definition_DefinitionID",
-                        column: x => x.DefinitionID,
-                        principalTable: "Definition",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_EntryDefinitionAssociations_Lexeme_EntryID",
-                        column: x => x.EntryID,
-                        principalTable: "Lexeme",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -334,7 +317,7 @@ namespace My_Little_Dictionary___Anniversary_Edition.Migrations
                     ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Expression = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FormID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    EntryID = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    LexemeID = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -346,8 +329,8 @@ namespace My_Little_Dictionary___Anniversary_Edition.Migrations
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Word_Lexeme_EntryID",
-                        column: x => x.EntryID,
+                        name: "FK_Word_Lexeme_LexemeID",
+                        column: x => x.LexemeID,
                         principalTable: "Lexeme",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
@@ -398,14 +381,14 @@ namespace My_Little_Dictionary___Anniversary_Edition.Migrations
                 column: "LexemeID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_EntryDefinitionAssociations_DefinitionID",
-                table: "EntryDefinitionAssociations",
-                column: "DefinitionID");
+                name: "IX_Dictionary_LanguageID",
+                table: "Dictionary",
+                column: "LanguageID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_EntryDefinitionAssociations_EntryID",
-                table: "EntryDefinitionAssociations",
-                column: "EntryID");
+                name: "IX_Dictionary_ProjectID",
+                table: "Dictionary",
+                column: "ProjectID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Form_PartOfSpeechID",
@@ -418,14 +401,9 @@ namespace My_Little_Dictionary___Anniversary_Edition.Migrations
                 column: "DictionaryID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PartOfSpeech_LanguageID",
+                name: "IX_PartOfSpeech_DictionaryID",
                 table: "PartOfSpeech",
-                column: "LanguageID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Project_LanguageID",
-                table: "Project",
-                column: "LanguageID");
+                column: "DictionaryID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RefreshToken_UserId",
@@ -433,14 +411,14 @@ namespace My_Little_Dictionary___Anniversary_Edition.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Word_EntryID",
-                table: "Word",
-                column: "EntryID");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Word_FormID",
                 table: "Word",
                 column: "FormID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Word_LexemeID",
+                table: "Word",
+                column: "LexemeID");
         }
 
         /// <inheritdoc />
@@ -462,7 +440,7 @@ namespace My_Little_Dictionary___Anniversary_Edition.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "EntryDefinitionAssociations");
+                name: "Definition");
 
             migrationBuilder.DropTable(
                 name: "RefreshToken");
@@ -472,9 +450,6 @@ namespace My_Little_Dictionary___Anniversary_Edition.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
-
-            migrationBuilder.DropTable(
-                name: "Definition");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
@@ -492,10 +467,10 @@ namespace My_Little_Dictionary___Anniversary_Edition.Migrations
                 name: "Dictionary");
 
             migrationBuilder.DropTable(
-                name: "Project");
+                name: "Language");
 
             migrationBuilder.DropTable(
-                name: "Language");
+                name: "Project");
         }
     }
 }

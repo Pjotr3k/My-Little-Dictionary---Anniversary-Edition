@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using My_Little_Dictionary___Anniversary_Edition.Interfaces;
+using My_Little_Dictionary___Anniversary_Edition.Data;
 
 namespace My_Little_Dictionary___Anniversary_Edition.Model
 {
@@ -28,12 +28,15 @@ namespace My_Little_Dictionary___Anniversary_Edition.Model
             Expires = DateTime.Now.AddHours(interval);
         }
 
-        public Guid? Use()
+        public Guid? Use(ApplicationDBContext context)
         {
             if (!Valid)
                 return null;
 
             Used |= true;
+
+            context.SaveChanges();
+
             return Token;
         }
     }

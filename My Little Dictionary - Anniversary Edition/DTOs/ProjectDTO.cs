@@ -9,7 +9,6 @@ namespace My_Little_Dictionary___Anniversary_Edition.DTOs
         public string Code { get; set; }
         public string Description { get; set; }
         public ProjectDataDTO Data { get; set; }
-        public LanguageDTO Language { get; set; }
         public ProjectDTO() { }
         public ProjectDTO(Project model)
         {
@@ -18,7 +17,6 @@ namespace My_Little_Dictionary___Anniversary_Edition.DTOs
             Code = model.Code;
             Description = model.Description;
             Data = new ProjectDataDTO(model.Name, model.Code, model.Description);
-            Language = new LanguageDTO(model.Language);
         }
     }
 
@@ -26,16 +24,15 @@ namespace My_Little_Dictionary___Anniversary_Edition.DTOs
 
     public class ProjectInsertDTO
     {
-
-        public Guid Language { get; set; }
         public ProjectDataDTO Data { get; set; }
+        public LexiconDataDTO? Lexicon { get; set; }
+        public Guid BaseLanguage { get; set; }
 
-        public void GetData(Project model, Language language)
+        public void GetData(Project model)
         {
             model.Name = Data.Name;
             model.Code = Data.Code;
             model.Description = Data.Description;
-            model.Language = language;
         }
     }
 }

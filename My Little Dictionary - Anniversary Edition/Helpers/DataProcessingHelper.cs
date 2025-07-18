@@ -1,4 +1,5 @@
-﻿using My_Little_Dictionary___Anniversary_Edition.DTOs;
+﻿using Microsoft.IdentityModel.Tokens;
+using My_Little_Dictionary___Anniversary_Edition.DTOs;
 using My_Little_Dictionary___Anniversary_Edition.Interfaces;
 
 namespace My_Little_Dictionary___Anniversary_Edition.Helpers
@@ -14,7 +15,7 @@ namespace My_Little_Dictionary___Anniversary_Edition.Helpers
             return source.Where(x => ((ISearchable)x).MatchSearch(searchPhrase.ToLower()));
         }
 
-        public static IEnumerable<TSource> Paginate<TSource>(this IEnumerable<TSource> source, PaginationRequestDTO request, out int total)
+        public static IEnumerable<TSource> Paginate<TSource>(this IEnumerable<TSource> source, PaginationRequest request, out int total)
         {
             return source.Paginate(request.PageNumber, request.PageSize, out total);
         }
@@ -30,5 +31,9 @@ namespace My_Little_Dictionary___Anniversary_Edition.Helpers
                 .Skip(skipItems)
                 .Take(pageSize);
         }
+
+        public static bool MatchAnyContaining(this string searchValue, params string[] values)
+            => !searchValue.IsNullOrEmpty() 
+            && values.Any(val  => val.ToLower().Contains(searchValue.ToLower()));
     }
 }

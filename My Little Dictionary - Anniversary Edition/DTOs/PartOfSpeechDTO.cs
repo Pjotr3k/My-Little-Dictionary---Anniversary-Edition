@@ -17,7 +17,7 @@ namespace My_Little_Dictionary___Anniversary_Edition.DTOs
             Name = model.Name;
             Description = model.Description;
             Data = new PartOfSpeechDescrDTO(model.Name, model.Description);
-            Language = model.Project?.ID;
+            Language = model.Dictionary?.ID;
         }
     }
 

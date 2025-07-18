@@ -1,4 +1,4 @@
-﻿namespace My_Little_Dictionary___Anniversary_Edition.Model
+﻿namespace My_Little_Dictionary___Anniversary_Edition.Validation
 {
     public class ValidationResponse<T>
     {
@@ -6,6 +6,7 @@
         public List<string> Warnings { get; set; } = new List<string>();
         public List<string> Errors { get; set; } = new List<string>();
         public T? Result { get; set; } = default;
+        public bool Success => Errors?.Any() ?? true;
 
         public ValidationResponse() { }
 
@@ -18,7 +19,6 @@
         {
             result = Result;
         }
-
 
         public void Deconstruct(out T? result, out List<string> errors)
         {
@@ -41,6 +41,11 @@
             Errors.AddRange(source.Errors);
 
             return this;
+        }
+
+        public void HandleValidationException(ValidationException exception)
+        {
+            Errors.AddRange(exception.Errors);
         }
     }
 }

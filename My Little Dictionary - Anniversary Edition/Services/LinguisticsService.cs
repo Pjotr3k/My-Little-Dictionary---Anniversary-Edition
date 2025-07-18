@@ -1,140 +1,66 @@
-﻿using Azure.Core;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using My_Little_Dictionary___Anniversary_Edition.Data;
 using My_Little_Dictionary___Anniversary_Edition.DTOs;
-using My_Little_Dictionary___Anniversary_Edition.Helpers;
 using My_Little_Dictionary___Anniversary_Edition.Model;
 using My_Little_Dictionary___Anniversary_Edition.Services.Base;
 using My_Little_Dictionary___Anniversary_Edition.Services.Interfaces;
+using My_Little_Dictionary___Anniversary_Edition.Validation;
 
 namespace My_Little_Dictionary___Anniversary_Edition.Services
 {
     public class LinguisticsService : BaseContextService, ILinguisticsService
     {
+        private readonly ILanguageService _languageService;
+        private readonly IProjectService _projectService;
+
         public LinguisticsService(ApplicationDBContext context) : base(context)
         {
 
         }
-        //public ValidationResponse<Form> AddForm(FormInsertDTO request, PartOfSpeech pos)
-        //{
-        //    ValidationResponse<Form> validation = new ValidationResponse<Form>();
 
-        //     //= _context.PartOfSpeech.FirstOrDefault(x => x.ID == request.PartOfSpeech);
-
-        //    if (pos == null)
-        //    {
-        //        validation.Errors.Add(string.Format("No part of speach with id {0}", request.PartOfSpeech.ToString()));
-        //        return validation;
-        //    }
-
-        //    Form form = new Form()
-        //    {
-        //        Name = request.Name,
-        //        Description = request.Description != null ? request.Description : "",
-        //        PartOfSpeech = pos
-        //    };
-
-        //    _context.Add(form);
-        //    _context.SaveChanges();
-        //    validation.Result = form;
-
-        //    return validation;
-        //}
-
-        public ValidationResponse<Project> AddProject(ProjectInsertDTO request)
+        public Lexicon AddDictionary(LexiconInsertDTO request)
         {
-            ValidationResponse<Project> validation = new ValidationResponse<Project>();
+            Project project = _projectService.GetProjectById(request.ProjectID);
+            Language language = _languageService.GetLanguageById(request.LanguageID);
 
-            var (language, _) = GetLanguageById(request.Language);
+            ValidationHelper.ValidateSequence(
+                () => project.ValidateOnNull(),
+                () => language.ValidateOnNull()
+                );
 
-            if (language == null)
-            {
-                validation.Errors.Add("Language not found");
-                return validation;
-            }
-
-            Project project = new Project();
-
-            request.GetData(project, language);
-
-            _context.Add(project);
-            _context.SaveChanges();
-            validation.Result = project;
-
-            return validation;
+            return AddDictionary(request.Data, project, language);
         }
 
-        public ValidationResponse<Language> AddLanguage(LanguageInsertDTO request)
+        public Lexicon AddDictionary(LexiconDataDTO request, Project project, Language language)
         {
-            ValidationResponse<Language> validation = new ValidationResponse<Language>();
+            Lexicon lexicon = new Lexicon()
+            {
+                Name = request.Name,
+                Description = request.Description ?? "",
+                Language = language,
+                Project = project,
+            };
 
-            Language language = new Language();
-
-            request.GetData(language);
-
-            _context.Add(language);
+            _context.Add(lexicon);
             _context.SaveChanges();
-            validation.Result = language;
 
-            return validation;
+            return lexicon;
         }
-
-        public void CSVImportLangs()
+        public PartOfSpeech AddPartOfSpeech(PartOfSpeechInsertDTO request)
         {
-            string csvContent = File.ReadAllText("C:\\Users\\User\\OneDrive\\Pulpit\\lang.csv");
-            var languages = new List<Language>();
-
-            using (var reader = new StringReader(csvContent))
-            {
-                string line;
-
-                while ((line = reader.ReadLine()) != null)
-                {
-                    var fields = line.Split(',');
-
-                    if (fields.Length >= 3)
-                    {
-                        var language = new Language
-                        {
-                            Code = fields[0].Trim('\"'),  // "alpha3-b" => Code
-                            Name = fields[2].Trim('\"'),  // "English" => Name
-                            Description = string.Empty    // Description left as empty string
-                        };
-
-                        languages.Add(language);
-                    }
-                }
-            }
-
-            foreach (var language in languages)
-            {
-                _context.Add(language);
-            }
-            _context.SaveChanges();
-        }
-
-        public ValidationResponse<PartOfSpeech> AddPartOfSpeech(PartOfSpeechInsertDTO request)
-        {
-            ValidationResponse<PartOfSpeech> validation = new ValidationResponse<PartOfSpeech>();
-
-            Project language = _context.Project.FirstOrDefault(x => x.ID == request.ProjectID);
-
-            if (language == null)
-            {
-                validation.Errors.Add(string.Format("No language with id {0}", request.ProjectID.ToString()));
-                return validation;
-            }
+            Lexicon dictionary = GetDictionaryById(request.ProjectID)
+                .ValidateOnNull($"No dictionary with id {request.ProjectID}");
 
             PartOfSpeech pos = new PartOfSpeech()
             {
                 Name = request.Data.Name,
-                Description = request.Data.Description != null ? request.Data.Description : "",
-                Project = language,
+                Description = request.Data.Description ?? "",
+                Dictionary = dictionary,
             };
 
             _context.Add(pos);
 
-            foreach(var item in request.Forms)
+            foreach (var item in request.Forms)
             {
                 Form form = new Form()
                 {
@@ -147,214 +73,61 @@ namespace My_Little_Dictionary___Anniversary_Edition.Services
             }
 
             _context.SaveChanges();
-            validation.Result = pos;
 
-            return validation;
-
-        }
-
-        //public ValidationResponse<List<Form>> BulkAddForm(List<FormInsertDTO> request)
-        //{
-        //    ValidationResponse<List<Form>> validation = new ValidationResponse<List<Form>>();
-        //    List<Form> forms = new List<Form>();
-
-        //    foreach (var item in request)
-        //    {
-        //        PartOfSpeech pos = _context.PartOfSpeech.FirstOrDefault(x => x.ID == item.PartOfSpeech);
-
-        //        if (pos == null)
-        //        {
-        //            validation.Errors.Add(string.Format("No part of speach with id {0}", item.PartOfSpeech.ToString()));
-        //            continue;
-        //        }
-
-        //        Form form = new Form()
-        //        {
-        //            Name = item.Name,
-        //            Description = item.Description != null ? item.Description : "",
-        //            PartOfSpeech = pos
-        //        };
-
-        //        forms.Add(form);
-        //    }
-
-        //    if (validation.Errors.Any()) return validation;
-
-        //    _context.AddRange(forms);
-        //    _context.SaveChanges();
-        //    validation.Result = forms;
-
-        //    return validation;
-        //}
-
-        public ValidationResponse<List<Form>> GetAllForms()
-        {
-            ValidationResponse<List<Form>> validation = new ValidationResponse<List<Form>>();
-            validation.Result = _context.Form.ToList();
-
-            return validation;
-        }
-
-        public PaginationResponse<LanguageDTO> GetLanguages(PaginationRequestDTO? request)
-        {
-            PaginationResponse<LanguageDTO> validation = new PaginationResponse<LanguageDTO>(request);
-            List<Language> result = _context.Language
-                .OrderBy(item => item.Name)
-                .Filter(request?.SearchPhrase)
-                .ToList();
-
-            validation.Paginate(result, (model) => new LanguageDTO(model));
-
-            return validation;
-        }
-
-        public PaginationResponse<ProjectDTO> GetProjects(PaginationRequestDTO? request = null)
-        {
-            PaginationResponse<ProjectDTO> validation = new PaginationResponse<ProjectDTO>(request);
-            List<Project> result = _context.Project
-                .Include(item => item.Language)
-                   .OrderBy(item => item.Name)
-                   .Filter(request?.SearchPhrase)
-                   .ToList();
-
-            validation.Paginate(result, (model) => new ProjectDTO(model));
-
-            return validation;
-        }
-
-        public PaginationResponse<PartOfSpeech> GetPartsOfSpeechByLanguage(PaginationRequestDTO? request, Guid projectID)
-        {
-            
-            PaginationResponse<PartOfSpeech> validation = new PaginationResponse<PartOfSpeech>(request);
-            validation.Result = _context.PartOfSpeech
-                .Include(item => item.Project)
-                .ToList();
-
-            return validation;
-        }
-
-        public ValidationResponse<Form> GetFormById(Guid id)
-        {
-            ValidationResponse<Form> validation = new ValidationResponse<Form>();
-            validation.Result = _context.Form.FirstOrDefault(x => x.ID == id);
-            if (validation.Result == null)
-            {
-                validation.Errors.Add("No form with that ID");
-            }
-
-            return validation;
-        }
-
-        public ValidationResponse<Language> GetLanguageById(Guid id)
-        {
-            ValidationResponse<Language> validation = new ValidationResponse<Language>();
-            validation.Result = _context.Language.FirstOrDefault(x => x.ID == id);
-            if (validation.Result == null)
-            {
-                validation.Errors.Add("No language with that ID");
-            }
-
-            return validation;
-        }
-
-        public ValidationResponse<Project> GetProjectById(Guid id)
-        {
-            ValidationResponse<Project> validation = new ValidationResponse<Project>();
-            validation.Result = _context.Project.FirstOrDefault(x => x.ID == id);
-            if (validation.Result == null)
-            {
-                validation.Errors.Add("No project with that ID");
-            }
-
-            return validation;
-        }
-
-        public ValidationResponse<Project> GetProjectByCode(string code)
-        {
-            ValidationResponse<Project> validation = new ValidationResponse<Project>();
-            validation.Result = _context.Project.FirstOrDefault(x => x.Code == code);
-            if (validation.Result == null)
-            {
-                validation.Errors.Add("No project with that code");
-            }
-
-            return validation;
+            return pos;
 
         }
 
-        public ValidationResponse<PartOfSpeech> GetPartOfSpeechById(Guid id)
+        public PaginationResult<PartOfSpeech> GetPartsOfSpeechByLanguage(PaginationRequest? request, Guid projectID)
         {
-            ValidationResponse<PartOfSpeech> validation = new ValidationResponse<PartOfSpeech>();
-            validation.Result = _context.PartOfSpeech.FirstOrDefault(x => x.ID == id);
-            if (validation.Result == null)
-            {
-                validation.Errors.Add("No part of speech with that ID");
-            }
+            var query = _context.PartOfSpeech
+                .Include(item => item.Dictionary)
+                .Where(item => item.Dictionary.ID == projectID);
 
-            return validation;
+            return new PaginationResult<PartOfSpeech>(query, request);
         }
 
-        public ValidationResponse<PartOfSpeech> GetPartOfSpeechByName(string posName, string projectCode)
+        public Form GetFormById(Guid id)
+            => _context.Form.GetById(id);
+
+        public PartOfSpeech GetPartOfSpeechById(Guid id)
+            => _context.PartOfSpeech.GetById(id);
+
+        public Lexicon GetDictionaryById(Guid id)
+            => _context.Dictionary.GetById(id);
+
+        public PartOfSpeech GetPartOfSpeechByName(string posName, Guid dictionaryId)
         {
-            ValidationResponse<PartOfSpeech> validation = new ValidationResponse<PartOfSpeech>();
+            var dictionary = GetDictionaryById(dictionaryId)
+                .ValidateOnNull(dictionaryId, "Project", "code");
 
-            var projectVal = GetProjectByCode(projectCode);
-            var (project, _) = projectVal;
 
-            validation.MergeValidation(projectVal);
-
-            if (project == null || projectVal.Errors.Any())
-                return validation.MergeValidation(projectVal);
-
-            validation.Result = _context.PartOfSpeech
-                .FirstOrDefault(x => x.Project == project && x.Name == posName);
-
-            if (validation.Result == null)
-            {
-                validation.Errors.Add("No part of speech with that name");
-            }
-
-            return validation;
+            return _context.PartOfSpeech
+                .FirstOrDefault(x => x.Dictionary == dictionary && x.Name == posName);
         }
 
-        public ValidationResponse<List<Form>> GetFormsByPos(Guid posId)
+        public List<Form> GetFormsByPos(Guid posId)
         {
-            ValidationResponse<List<Form>> validation = new ValidationResponse<List<Form>>();
-            validation.Result = _context.Form
+            return _context.Form
                 .Where(item => item.PartOfSpeech.ID == posId)
                 .ToList();
-
-            return validation;
         }
 
-        public PaginationResponse<PartOfSpeech> GetPartsOfSpeechByProject(PaginationRequestDTO? request, string projectCode)
+        public PaginationResult<PartOfSpeech> GetPartsOfSpeechByDictionary(PaginationRequest? request, Guid dictionaryId)
         {
-            PaginationResponse<PartOfSpeech> validation = new PaginationResponse<PartOfSpeech>(request);
+            var project = GetDictionaryById(dictionaryId)
+                .ValidateOnNull(dictionaryId.ToString(), "Project", "Code");
 
-            var projectVal = GetProjectByCode(projectCode);
-            var (project, _) = projectVal;
-
-            validation.MergeValidation(projectVal);
-
-            if (project == null || projectVal.Errors.Any())
-                return (PaginationResponse<PartOfSpeech>)validation
-                    .MergeValidation(projectVal);
-
-            return GetPartsOfSpeechByProject(request, project);
+            return GetPartsOfSpeechByDictionary(request, project);
         }
 
-        public PaginationResponse<PartOfSpeech> GetPartsOfSpeechByProject(PaginationRequestDTO? request, Project project)
+        public PaginationResult<PartOfSpeech> GetPartsOfSpeechByDictionary(PaginationRequest? request, Lexicon dictionary)
         {
-            PaginationResponse<PartOfSpeech> validation = new PaginationResponse<PartOfSpeech>(request);
-            List<PartOfSpeech> result = _context.PartOfSpeech
-                .Where(item => item.Project == project)
-                .OrderBy(item => item.Name)
-                .Filter(request?.SearchPhrase)
-                .ToList();
+            PaginationResult<PartOfSpeech> validation = new PaginationResult<PartOfSpeech>(request);
+            var result = _context.PartOfSpeech
+                .Where(item => item.Dictionary == dictionary);
 
-            validation.Paginate(result);
-
-            return validation;
+            return new PaginationResult<PartOfSpeech>(result, request);
         }
     }
 }

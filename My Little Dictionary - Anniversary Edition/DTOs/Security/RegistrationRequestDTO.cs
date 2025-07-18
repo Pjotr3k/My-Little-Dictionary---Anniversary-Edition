@@ -1,4 +1,5 @@
-﻿using My_Little_Dictionary___Anniversary_Edition.Model;
+﻿using My_Little_Dictionary___Anniversary_Edition.Data;
+using My_Little_Dictionary___Anniversary_Edition.Validation;
 
 namespace My_Little_Dictionary___Anniversary_Edition.DTOs.Security
 {
@@ -11,18 +12,20 @@ namespace My_Little_Dictionary___Anniversary_Edition.DTOs.Security
         public string EmailConfirm { get; set; }
 
 
-        public void Validate<T>(ValidationResponse<T> validation)
+        public void Validate(ApplicationDBContext context)
         {
-            if (Password != PasswordConfirm)
-            {
-                validation.Errors.Add("Passwords are different");
-            }
-
-            if (Email != EmailConfirm)
-            {
-                validation.Errors.Add("Emails are different");
-            }
-
+            ValidationHelper.ValidateSequence(
+                () =>
+                {
+                    if (Password != PasswordConfirm)
+                        throw new ValidationException("Passwords are different");
+                },
+                () =>
+                {
+                    if (Email != EmailConfirm)
+                        throw new ValidationException("Emails are different");
+                }
+                );
         }
     }
 }
