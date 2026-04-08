@@ -8,7 +8,8 @@ namespace My_Little_Dictionary___Anniversary_Edition.DTOs
         public string Name { get; set; }
         public string Description { get; set; }
         public PartOfSpeechDescrDTO Data { get; set; }
-        public Guid? Language { get; set; }
+        public Guid? Dictionary { get; set; }
+        public List<FormDTO> Forms { get; set; }
 
         public PartOfSpeechDTO() { }
         public PartOfSpeechDTO(PartOfSpeech model)
@@ -17,7 +18,14 @@ namespace My_Little_Dictionary___Anniversary_Edition.DTOs
             Name = model.Name;
             Description = model.Description;
             Data = new PartOfSpeechDescrDTO(model.Name, model.Description);
-            Language = model.Dictionary?.ID;
+            Dictionary = model.Dictionary?.ID;
+
+            if(model.Forms != null)
+            {
+                Forms = model.Forms
+                    .Select(form => new FormDTO(form))
+                    .ToList();
+            }
         }
     }
 

@@ -13,7 +13,7 @@ export default function useLanguages(request: PaginationRequest) {
     queryKey: ["languages"],
     queryFn: async () =>
       axiosInstance
-        .post("/Linguistics/Languages", request)
+        .post("/Language/Languages", request)
         .then((res) => res.data),
   });
 }
@@ -23,6 +23,6 @@ export function useLanguage(id: string) {
   return useQuery<ApiResponse<Language>>({
     queryKey: ["language", id],
     queryFn: async () =>
-      axiosInstance.get(`Linguistics/Language/${id}`).then((res) => res.data),
+      axiosInstance.get(`Language/Language/${id}`).then((res) => res.data),
   });
 }

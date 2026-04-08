@@ -8,7 +8,7 @@ namespace My_Little_Dictionary___Anniversary_Edition.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class BaseController : ControllerBase
     {
         private readonly ILogger<BaseController> _logger;

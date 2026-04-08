@@ -9,7 +9,7 @@ export function useProject(code: string) {
     queryKey: ["project", code],
     queryFn: async () =>
       axiosInstance
-        .get(`Linguistics/Project/${code}`)
+        .get(`Project/Project/?projectCode=${code}`)
         .then((res) => res.data),
   });
 }

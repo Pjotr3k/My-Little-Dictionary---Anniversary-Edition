@@ -14,6 +14,12 @@ export type Project = {
   language: Language;
 } & WithID;
 
+export type Dictionary = {
+  data: DictionaryData;
+  language: Language;
+  project: Project
+} & WithID;
+
 export type Language = {
   name: string;
   code: string;
@@ -41,6 +47,12 @@ export type PartOfSpeechDescr = {
   code: string;
   description: string;
 };
+
+export type DictionaryData = {
+  name: string;
+  code: string;
+  description: string;
+}
 
 export type Breadcrumb = {
   label: string;

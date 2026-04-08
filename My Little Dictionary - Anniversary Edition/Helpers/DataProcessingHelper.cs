@@ -1,10 +1,10 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using My_Little_Dictionary___Anniversary_Edition.DTOs;
 using My_Little_Dictionary___Anniversary_Edition.Interfaces;
+using My_Little_Dictionary___Anniversary_Edition.Model;
 
 namespace My_Little_Dictionary___Anniversary_Edition.Helpers
 {
-
     public static class DataProcessingHelper
     {
         public static IEnumerable<TSource> Filter<TSource>(this IEnumerable<TSource> source, string? searchPhrase) where TSource : ISearchable
@@ -32,8 +32,15 @@ namespace My_Little_Dictionary___Anniversary_Edition.Helpers
                 .Take(pageSize);
         }
 
+        public static PaginationResult<TData> ToPaginationResult<TData>(this IEnumerable<TData> source, PaginationRequest request)
+            => new PaginationResult<TData>(source, request);
+
+        public static PaginationResult<TResult> ToPaginationResult<TSource, TResult>(this IEnumerable<TSource> source, PaginationRequest request, Func<TSource, TResult> selector)
+            => source.ToPaginationResult(request).Select(selector.Invoke);
+
+
         public static bool MatchAnyContaining(this string searchValue, params string[] values)
-            => !searchValue.IsNullOrEmpty() 
-            && values.Any(val  => val.ToLower().Contains(searchValue.ToLower()));
+            => !searchValue.IsNullOrEmpty()
+            && values.Any(val => val.Contains(searchValue, StringComparison.CurrentCultureIgnoreCase));
     }
 }

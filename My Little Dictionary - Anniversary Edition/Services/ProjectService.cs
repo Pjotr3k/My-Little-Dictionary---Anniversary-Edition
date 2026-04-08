@@ -1,9 +1,11 @@
-﻿using My_Little_Dictionary___Anniversary_Edition.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using My_Little_Dictionary___Anniversary_Edition.Data;
 using My_Little_Dictionary___Anniversary_Edition.DTOs;
 using My_Little_Dictionary___Anniversary_Edition.Model;
 using My_Little_Dictionary___Anniversary_Edition.Services.Base;
 using My_Little_Dictionary___Anniversary_Edition.Services.Interfaces;
 using My_Little_Dictionary___Anniversary_Edition.Validation;
+using System.Linq.Expressions;
 
 namespace My_Little_Dictionary___Anniversary_Edition.Services
 {
@@ -32,13 +34,13 @@ namespace My_Little_Dictionary___Anniversary_Edition.Services
             return project;
         }
             
-        public Project GetProjectById(Guid id)
-            => _context.Project.GetById(id);
+        public Project GetProjectById(Guid id, params Expression<Func<Project, object>>[] includeFuncs)
+            => _context.Project.GetById(id, includeFuncs);
 
         public Project GetProjectByCode(string code)
             => _context.Project.FirstOrDefault(x => x.Code == code);
 
-        public PaginationResult<Project> GetProjects(PaginationRequest? request = null)
-            => new(_context.Project, request);
+        public IQueryable<Project> GetProjects()
+            => _context.Project;
     }
 }

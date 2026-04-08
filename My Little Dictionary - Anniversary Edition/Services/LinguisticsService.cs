@@ -5,6 +5,8 @@ using My_Little_Dictionary___Anniversary_Edition.Model;
 using My_Little_Dictionary___Anniversary_Edition.Services.Base;
 using My_Little_Dictionary___Anniversary_Edition.Services.Interfaces;
 using My_Little_Dictionary___Anniversary_Edition.Validation;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace My_Little_Dictionary___Anniversary_Edition.Services
 {
@@ -13,9 +15,10 @@ namespace My_Little_Dictionary___Anniversary_Edition.Services
         private readonly ILanguageService _languageService;
         private readonly IProjectService _projectService;
 
-        public LinguisticsService(ApplicationDBContext context) : base(context)
+        public LinguisticsService(ILanguageService languageService, IProjectService projectService, ApplicationDBContext context) : base(context)
         {
-
+            _languageService = languageService;
+            _projectService = projectService;
         }
 
         public Lexicon AddDictionary(LexiconInsertDTO request)
@@ -37,6 +40,7 @@ namespace My_Little_Dictionary___Anniversary_Edition.Services
             {
                 Name = request.Name,
                 Description = request.Description ?? "",
+                Code = request.Code,
                 Language = language,
                 Project = project,
             };
@@ -75,26 +79,23 @@ namespace My_Little_Dictionary___Anniversary_Edition.Services
             _context.SaveChanges();
 
             return pos;
-
         }
 
-        public PaginationResult<PartOfSpeech> GetPartsOfSpeechByLanguage(PaginationRequest? request, Guid projectID)
+        public IQueryable<PartOfSpeech> GetPartsOfSpeechByLanguage(Guid projectID)
         {
-            var query = _context.PartOfSpeech
+            return _context.PartOfSpeech
                 .Include(item => item.Dictionary)
                 .Where(item => item.Dictionary.ID == projectID);
-
-            return new PaginationResult<PartOfSpeech>(query, request);
         }
 
-        public Form GetFormById(Guid id)
-            => _context.Form.GetById(id);
+        public Form GetFormById(Guid id, params Expression<Func<Form, object>>[] includeFuncs)
+            => _context.Form.GetById(id, includeFuncs);
 
-        public PartOfSpeech GetPartOfSpeechById(Guid id)
-            => _context.PartOfSpeech.GetById(id);
+        public PartOfSpeech GetPartOfSpeechById(Guid id, params Expression<Func<PartOfSpeech, object>>[] includeFuncs)
+            => _context.PartOfSpeech.GetById(id, includeFuncs);
 
-        public Lexicon GetDictionaryById(Guid id)
-            => _context.Dictionary.GetById(id);
+        public Lexicon GetDictionaryById(Guid id, params Expression<Func<Lexicon, object>>[] includeFuncs)
+            => _context.Dictionary.GetById(id, includeFuncs);
 
         public PartOfSpeech GetPartOfSpeechByName(string posName, Guid dictionaryId)
         {
@@ -106,28 +107,49 @@ namespace My_Little_Dictionary___Anniversary_Edition.Services
                 .FirstOrDefault(x => x.Dictionary == dictionary && x.Name == posName);
         }
 
-        public List<Form> GetFormsByPos(Guid posId)
+        public IQueryable<Form> GetFormsByPos(Guid posId)
         {
             return _context.Form
-                .Where(item => item.PartOfSpeech.ID == posId)
-                .ToList();
+                .Where(item => item.PartOfSpeech.ID == posId);
         }
 
-        public PaginationResult<PartOfSpeech> GetPartsOfSpeechByDictionary(PaginationRequest? request, Guid dictionaryId)
+        public IQueryable<PartOfSpeech> GetPartsOfSpeechByDictionary(Guid dictionaryId, params Expression<Func<PartOfSpeech, object>>[] includeFuncs)
         {
-            var project = GetDictionaryById(dictionaryId)
+            var dictionary = GetDictionaryById(dictionaryId)
                 .ValidateOnNull(dictionaryId.ToString(), "Project", "Code");
 
-            return GetPartsOfSpeechByDictionary(request, project);
+            return GetPartsOfSpeechByDictionary(dictionary);
         }
 
-        public PaginationResult<PartOfSpeech> GetPartsOfSpeechByDictionary(PaginationRequest? request, Lexicon dictionary)
+        public IQueryable<PartOfSpeech> GetPartsOfSpeechByDictionary(Lexicon dictionary, params Expression<Func<PartOfSpeech, object>>[] includeFuncs)
         {
-            PaginationResult<PartOfSpeech> validation = new PaginationResult<PartOfSpeech>(request);
-            var result = _context.PartOfSpeech
-                .Where(item => item.Dictionary == dictionary);
+            var query =  _context.PartOfSpeech.Include(includeFuncs.First());
 
-            return new PaginationResult<PartOfSpeech>(result, request);
+            foreach(var inclFunc in includeFuncs)
+            {
+                query = query.Inc
+            }
+
+            if (includeFuncs == null)
+            {
+                return _context.PartOfSpeech
+                    .Where(item => item.Dictionary == dictionary);
+            }
+
+        }
+
+        public IQueryable<Lexicon> DictionariesByProject(Guid projectId)
+        {
+            var project = _projectService.GetProjectById(projectId)
+                .ValidateOnNull(projectId.ToString(), "Project");
+
+            return DictionariesByProject(project);
+        }
+
+        public IQueryable<Lexicon> DictionariesByProject(Project project)
+        {
+            return _context.Dictionary
+                .Where(item => item.Project == project);
         }
     }
 }

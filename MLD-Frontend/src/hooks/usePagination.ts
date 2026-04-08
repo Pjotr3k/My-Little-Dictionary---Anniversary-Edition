@@ -25,8 +25,12 @@ export default function usePaginateQuery<T extends object>({useItems, itemKey} :
   } 
 
   useEffect(() => {
-    refetch().then((val) => {
-      const newLangs = val?.data?.result || []
+    refetch().then(({data}) => {
+      if(!data || data.errors.length || !data.result) return;
+
+      const result = data.result
+      
+      const newLangs = result.data || []
       setItems(newLangs)
     }
   )
@@ -34,7 +38,7 @@ export default function usePaginateQuery<T extends object>({useItems, itemKey} :
 
   useEffect(() => {
     refetch().then((val) => {
-      const newLangs = val?.data?.result || []
+      const newLangs = val?.data?.result?.data || []
       setItems(prev => {
         const toAdd = newLangs.filter(itemA => {
           const keyA = itemKey(itemA)

@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using My_Little_Dictionary___Anniversary_Edition.Data;
 using My_Little_Dictionary___Anniversary_Edition.DTOs;
-using My_Little_Dictionary___Anniversary_Edition.Services.Interfaces;
+using My_Little_Dictionary___Anniversary_Edition.Helpers;
 using My_Little_Dictionary___Anniversary_Edition.Mappers;
-using Microsoft.AspNetCore.Authorization;
+using My_Little_Dictionary___Anniversary_Edition.Services.Interfaces;
 
 namespace My_Little_Dictionary___Anniversary_Edition.Controllers
 {
@@ -26,19 +26,26 @@ namespace My_Little_Dictionary___Anniversary_Edition.Controllers
                 => _projectService.AddProject(request)?.ToDTO());
         }
 
-        [HttpGet("{projectCode}")]
-        [AllowAnonymous]
-        public IActionResult Project([FromRoute] string projectCode)
+        [HttpGet]
+        public IActionResult Project([FromQuery] string projectCode)
         {
             return ResponseWithValidationResponse(()
                 => _projectService.GetProjectByCode(projectCode)?.ToDTO());
+        }
+
+        [HttpGet("{projectId}")]
+        public IActionResult Project([FromRoute] Guid projectId)
+        {
+            return ResponseWithValidationResponse(()
+                => _projectService.GetProjectById(projectId)?.ToDTO());
         }
 
         [HttpPost]
         public IActionResult Projects([FromBody] PaginationRequest request)
         {
             return ResponseWithValidationResponse(()
-                => _projectService.GetProjects(request).Select(item => item.ToDTO()));
+                => _projectService.GetProjects()
+                .ToPaginationResult(request, item => item.ToDTO()));
         }
     }
 }

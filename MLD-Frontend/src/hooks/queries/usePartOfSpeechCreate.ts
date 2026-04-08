@@ -10,7 +10,7 @@ export default function usePartOfSpeechCreate(){
     return useMutation<ApiResponse<Project>, unknown, PartOfSpeechInsert>({
         mutationKey: ["part-of-speech"],
         mutationFn: async (data: PartOfSpeechInsert) =>
-            axiosInstance.post("Linguistics/PartOfSpeech", data)
+            axiosInstance.post("Dictionary/PartOfSpeech", data)
         .then((res) => res.data)        
     })
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using My_Little_Dictionary___Anniversary_Edition.Data;
 using My_Little_Dictionary___Anniversary_Edition.DTOs;
+using My_Little_Dictionary___Anniversary_Edition.Helpers;
 using My_Little_Dictionary___Anniversary_Edition.Mappers;
 using My_Little_Dictionary___Anniversary_Edition.Services.Interfaces;
 
@@ -24,7 +25,8 @@ namespace My_Little_Dictionary___Anniversary_Edition.Controllers
         public ActionResult Dictionary(LexiconInsertDTO request)
         {
             return ResponseWithValidationResponse(() 
-                => _linguisticsService.AddDictionary(request));
+                => _linguisticsService.AddDictionary(request)
+                .ToDTO());
         }
 
         [HttpGet("{id}")]
@@ -32,6 +34,14 @@ namespace My_Little_Dictionary___Anniversary_Edition.Controllers
         {
             return ResponseWithValidationResponse(()
                 => _linguisticsService.GetDictionaryById(id));
+        }
+
+        [HttpGet("{projectId}")]
+        public ActionResult DictionaryDataByProject([FromRoute] Guid projectId)
+        {
+            return ResponseWithValidationResponse(()
+                => _linguisticsService.DictionariesByProject(projectId)
+                .ToDictionary(dictionary => dictionary.ID, dictionary => dictionary.ToDataDTO()));
         }
 
         [HttpPost]
@@ -52,7 +62,7 @@ namespace My_Little_Dictionary___Anniversary_Edition.Controllers
         public IActionResult PartOfSpeech([FromRoute] Guid id)
         {
             return ResponseWithValidationResponse(()
-                => _linguisticsService.GetPartOfSpeechById(id)?.ToDTO());
+                => _linguisticsService.GetPartOfSpeechById(id, item => item.Forms)?.ToDTO());
         }
 
         [HttpGet("{dictionaryId}/{posName}")]
@@ -66,8 +76,8 @@ namespace My_Little_Dictionary___Anniversary_Edition.Controllers
         public IActionResult PartOfSpeech([FromBody] PaginationRequest request, [FromRoute] Guid code)
         {
             return ResponseWithValidationResponse(()
-                => _linguisticsService.GetPartsOfSpeechByDictionary(request, code)
-                .Select(pos => new PartOfSpeechDTO(pos)));
+                => _linguisticsService.GetPartsOfSpeechByDictionary(code, item => item.Forms)
+                .ToPaginationResult(request, pos => new PartOfSpeechDTO(pos)));
         }
 
         [HttpGet("{pos}")]

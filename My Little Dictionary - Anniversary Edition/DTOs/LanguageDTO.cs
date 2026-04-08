@@ -9,7 +9,7 @@ namespace My_Little_Dictionary___Anniversary_Edition.DTOs
         public List<string> OtherNames { get; set; } = new List<string>();
         public string Code { get; set; }
         public string Description { get; set; }
-        public LanguageDTO() { }
+        public LanguageDTO() { }  
         public LanguageDTO(Language model)
         {
             ID = model.ID;

@@ -25,6 +25,13 @@ namespace My_Little_Dictionary___Anniversary_Edition.DTOs
             else if (Data.Name.Length > 100)
                 errors.Add(string.Format("Name {0} is too long", Data.Name));
 
+            if (string.IsNullOrEmpty(Data.Code))
+                errors.Add("The code is empty");
+            else if (Data.Name.Length > 5)
+                errors.Add(string.Format("Name {0} is too long", Data.Name));
+
+
+
             if (errors.Count != 0)
             {
                 throw new ValidationException(errors);
@@ -32,5 +39,5 @@ namespace My_Little_Dictionary___Anniversary_Edition.DTOs
         }
     }
 
-    public record LexiconDataDTO(string Name, string Description);
+    public record LexiconDataDTO(string Name, string Description, string Code);
 }

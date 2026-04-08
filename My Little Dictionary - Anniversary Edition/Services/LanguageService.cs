@@ -63,8 +63,7 @@ namespace My_Little_Dictionary___Anniversary_Edition.Services
         public Language GetLanguageById(Guid id)
             => _context.Language.GetById(id);
 
-        public PaginationResult<Language> GetLanguages(PaginationRequest? request)
-            => new(_context.Language, request);
-
+        public IQueryable<Language> GetLanguages()
+            => _context.Language;
     }
 }

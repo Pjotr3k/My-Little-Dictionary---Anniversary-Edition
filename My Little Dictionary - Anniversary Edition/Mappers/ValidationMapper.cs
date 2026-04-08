@@ -12,15 +12,13 @@ namespace My_Little_Dictionary___Anniversary_Edition.Mappers
             return new LexiconDTO
             {
                 ID = model.ID,
-                Data = new LexiconDataDTO(model.Name, model.Description),
+                Data = new LexiconDataDTO(model.Name, model.Description, model.Code),
                 Project = model.Project.ToDTO()
             };
         }
         public static PartOfSpeechDTO ToDTO(this PartOfSpeech model) => new PartOfSpeechDTO(model);
         public static FormDTO ToDTO(this Form model) => new FormDTO(model);
-
-
-
+        public static LexiconDataDTO ToDataDTO(this Lexicon model) => new LexiconDataDTO(model.Name, model.Description, model.Code);
 
     }
 }

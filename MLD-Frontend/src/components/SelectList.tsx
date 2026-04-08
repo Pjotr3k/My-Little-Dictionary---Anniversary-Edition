@@ -14,10 +14,13 @@ type Props<T extends object> = {
 
 export default function SelectList<T extends object>({selectedItem, setItem, mapper, useItems, itemKey, ...rest} : Props<T>){
   const {data, searchPhrase, handleSearch, items, setPageNumber} = usePaginateQuery({itemKey, useItems})
+
+  console.log("selectList", {items, ...data});
+  
   
   function handleScroll(e: React.UIEvent<HTMLUListElement, UIEvent>){
     const elem = e.currentTarget;
-    if(!data?.overlimit && elem.scrollTop + elem.clientHeight >= elem.scrollHeight)
+    if(!data?.result.overlimit && elem.scrollTop + elem.clientHeight >= elem.scrollHeight)
       setPageNumber(prev => prev+1)
     }
     

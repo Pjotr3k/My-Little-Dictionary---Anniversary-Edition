@@ -6,7 +6,7 @@
         public List<string> Warnings { get; set; } = new List<string>();
         public List<string> Errors { get; set; } = new List<string>();
         public T? Result { get; set; } = default;
-        public bool Success => Errors?.Any() ?? true;
+        public bool Success => Errors.Count == 0;
 
         public ValidationResponse() { }
 

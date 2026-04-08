@@ -1,29 +1,24 @@
-import { Button, Input } from "@mui/material";
+import { Input } from "@mui/material";
 import FieldWrapper from "../../../../components/FieldWrapper";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { FormDescr } from "../../../../types/data-models";
 import getCollectionActions, {
   Collection,
   getData,
 } from "../../../../helpers/collection-helper";
 import FormCollection from "./FormCollection";
-import usePartOfSpeechCreate from "../../../../hooks/queries/usePartOfSpeechCreate";
-import { PartOfSpeechInsert } from "../../../../types/requests";
-import {
-  ProjectContext,
-  TProjectContext,
-} from "../../../../contexts/ProjectProvider";
 import PartOfSpeechSubmitButton from "./PartOfSpeechSubmitButton";
 
-export default function PartOfSpeechForm() {
+type Props = {
+  dictionaryId: string;
+};
+
+export default function PartOfSpeechForm({ dictionaryId }: Props) {
   const [name, setName] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [code, setCode] = useState<string>("");
   const [forms, setForms] = useState<Collection<FormDescr>>([]);
   const [formDisabled, setFormDisabled] = useState<boolean>(false);
-  const {
-    projectData: { id: projectID },
-  } = useContext(ProjectContext) as TProjectContext;
 
   return (
     <div className="max-w-[800px] mx-auto flex flex-col gap-4">
@@ -57,7 +52,7 @@ export default function PartOfSpeechForm() {
       />
       <PartOfSpeechSubmitButton
         request={{
-          projectID,
+          projectID: dictionaryId,
           data: {
             name,
             code,

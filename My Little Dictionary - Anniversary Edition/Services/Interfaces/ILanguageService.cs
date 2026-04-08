@@ -7,7 +7,7 @@ namespace My_Little_Dictionary___Anniversary_Edition.Services.Interfaces
     {
         Language AddLanguage(LanguageInsertDTO request);
         Language GetLanguageById(Guid id);
-        PaginationResult<Language> GetLanguages(PaginationRequest? request);
+        IQueryable<Language> GetLanguages();
         void CSVImportLangs();
     }
-}
+} 

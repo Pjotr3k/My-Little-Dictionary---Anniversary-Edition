@@ -10,7 +10,7 @@ export default function useProjectCreate(){
     return useMutation<ApiResponse<Project>, unknown, ProjectInsert>({
         mutationKey: ["project"],
         mutationFn: async (data: ProjectInsert) =>
-            axiosInstance.post("Linguistics/Project", data)
+            axiosInstance.post("Project/Project", data)
         .then((res) => res.data)        
     })
 }

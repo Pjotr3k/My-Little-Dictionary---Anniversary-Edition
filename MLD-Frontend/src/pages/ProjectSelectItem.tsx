@@ -7,9 +7,11 @@ type Props = {
 }
 
 export default function ProjectSelectItem({item} : Props){
+    console.log("ProjectSelectItem", {...item});
+    
     const navigate = useNavigate();
     return <div>
-        <div>{item.name} {item.language.name}</div>
+        <div>{item.name} ({item.code})</div>
         <div>{item.description}</div>
         <Button onClick={() => navigate(`/${item.code}`)}>Browse</Button>
     </div>

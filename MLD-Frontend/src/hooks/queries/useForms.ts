@@ -1,5 +1,4 @@
 import { useQuery } from "react-query";
-import { backendURL } from "../../config";
 import { ApiResponse, PartOfSpeech } from "../../types/data-models";
 import getAxiosInstance from "../../helpers/axios-instance";
 
@@ -10,7 +9,7 @@ export default function useForms(pos?: string){
     return useQuery<ApiResponse<Array<PartOfSpeech>>>({
         queryKey: ["forms", params],
         queryFn: async () =>
-            axiosInstance.get("Linguistics/Form" + params)
+            axiosInstance.get("Dictionary/Form" + params)
         .then((res) => res.data)        
     })
 }
@@ -21,7 +20,7 @@ export function usePartOfSpeech(id: string){
   return useQuery<ApiResponse<PartOfSpeech>>({
       queryKey: ["form", id],
       queryFn: async () =>
-          axiosInstance.get(`Linguistics/Form/${id}`)
+          axiosInstance.get(`Dictionary/Form/${id}`)
       .then((res) => res.data)        
   })
 }

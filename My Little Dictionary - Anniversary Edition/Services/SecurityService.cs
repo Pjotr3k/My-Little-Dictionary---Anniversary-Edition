@@ -42,8 +42,8 @@ namespace My_Little_Dictionary___Anniversary_Edition.Services
 
         public async Task<LoginResponseDTO> Login(LoginRequestDTO request)
         {
-            var user = await _userManager.FindByNameAsync(request.UserName)
-                .ValidateOnNull(request.UserName, "User", "ID");
+            var user = await _userManager.FindByNameAsync(request.UserName);
+            user.ValidateOnNull(request.UserName, "User", "User Name");
 
             bool isPasswordValid = await _userManager.CheckPasswordAsync(user, request.Password);
 

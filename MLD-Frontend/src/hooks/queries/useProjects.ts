@@ -8,7 +8,7 @@ export default function useProjects(request: PaginationRequest){
     return useQuery<PaginationResponse<Project>>({
         queryKey: ["projects"],
         queryFn: async () =>
-            axiosInstance.post("/Linguistics/Projects", request)
+            axiosInstance.post("/Project/Projects", request)
         .then(res => res.data)
     })
 }
