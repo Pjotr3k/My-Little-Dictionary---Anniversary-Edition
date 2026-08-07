@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.5.33530.505
+# Visual Studio Version 18
+VisualStudioVersion = 18.4.11626.88 stable
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "My Little Dictionary - Anniversary Edition", "My Little Dictionary - Anniversary Edition\My Little Dictionary - Anniversary Edition.csproj", "{A27A4253-F109-4ED6-9520-70705971994F}"
+EndProject
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "mld-frontend", "MLD-Frontend\mld-frontend.esproj", "{FA592CB6-4BB1-3800-8E64-C6DF3564FF87}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,12 @@ Global
 		{A27A4253-F109-4ED6-9520-70705971994F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A27A4253-F109-4ED6-9520-70705971994F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A27A4253-F109-4ED6-9520-70705971994F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA592CB6-4BB1-3800-8E64-C6DF3564FF87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA592CB6-4BB1-3800-8E64-C6DF3564FF87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA592CB6-4BB1-3800-8E64-C6DF3564FF87}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{FA592CB6-4BB1-3800-8E64-C6DF3564FF87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA592CB6-4BB1-3800-8E64-C6DF3564FF87}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA592CB6-4BB1-3800-8E64-C6DF3564FF87}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

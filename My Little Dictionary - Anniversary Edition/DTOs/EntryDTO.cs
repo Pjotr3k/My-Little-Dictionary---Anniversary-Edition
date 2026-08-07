@@ -37,7 +37,7 @@ namespace My_Little_Dictionary___Anniversary_Edition.DTOs
 
         public void Validate()
         {
-            if (ID == null & Expression.IsNullOrEmpty())
+            if (ID == null & string.IsNullOrEmpty(Expression))
                 throw new ValidationException("Empty definition declaration - should contain ID or Expression");
         }
     }

@@ -40,7 +40,7 @@ namespace My_Little_Dictionary___Anniversary_Edition.Helpers
 
 
         public static bool MatchAnyContaining(this string searchValue, params string[] values)
-            => !searchValue.IsNullOrEmpty()
+            => !string.IsNullOrEmpty(searchValue)
             && values.Any(val => val.Contains(searchValue, StringComparison.CurrentCultureIgnoreCase));
     }
 }

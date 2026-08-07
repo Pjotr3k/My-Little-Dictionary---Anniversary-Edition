@@ -123,20 +123,20 @@ namespace My_Little_Dictionary___Anniversary_Edition.Services
 
         public IQueryable<PartOfSpeech> GetPartsOfSpeechByDictionary(Lexicon dictionary, params Expression<Func<PartOfSpeech, object>>[] includeFuncs)
         {
-            var query =  _context.PartOfSpeech.Include(includeFuncs.First());
+            IQueryable<PartOfSpeech> query = _context.PartOfSpeech;
 
-            foreach(var inclFunc in includeFuncs)
+            if (includeFuncs != null && includeFuncs.Length > 0)
             {
-                query = query.Inc
+                foreach (var inclFunc in includeFuncs)
+                {
+                    if (inclFunc != null)
+                        query = query.Include(inclFunc);
+                }
             }
 
-            if (includeFuncs == null)
-            {
-                return _context.PartOfSpeech
-                    .Where(item => item.Dictionary == dictionary);
-            }
-
+            return query.Where(item => item.Dictionary == dictionary);
         }
+        public IQueryable<PartOfSpeech> GetPartsOfSpeechByDictionary(Lexicon dictionary) => GetPartsOfSpeechByDictionary(dictionary, null);
 
         public IQueryable<Lexicon> DictionariesByProject(Guid projectId)
         {
@@ -151,5 +151,7 @@ namespace My_Little_Dictionary___Anniversary_Edition.Services
             return _context.Dictionary
                 .Where(item => item.Project == project);
         }
+
+
     }
 }
