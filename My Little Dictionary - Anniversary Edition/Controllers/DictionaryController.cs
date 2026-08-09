@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using My_Little_Dictionary___Anniversary_Edition.Data;
-using My_Little_Dictionary___Anniversary_Edition.DTOs;
-using My_Little_Dictionary___Anniversary_Edition.Helpers;
+﻿using Data;
+using Microsoft.AspNetCore.Mvc;
 using My_Little_Dictionary___Anniversary_Edition.Mappers;
-using My_Little_Dictionary___Anniversary_Edition.Services.Interfaces;
+using Service.DTOs;
+using Service.Helpers;
+using Service.Interfaces;
 
 namespace My_Little_Dictionary___Anniversary_Edition.Controllers
 {

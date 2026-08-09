@@ -1,11 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.4.11626.88 stable
+VisualStudioVersion = 18.4.11626.88
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "My Little Dictionary - Anniversary Edition", "My Little Dictionary - Anniversary Edition\My Little Dictionary - Anniversary Edition.csproj", "{A27A4253-F109-4ED6-9520-70705971994F}"
 EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "mld-frontend", "MLD-Frontend\mld-frontend.esproj", "{FA592CB6-4BB1-3800-8E64-C6DF3564FF87}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{39ACBEE9-CE51-4F41-A4AD-AD16AD9E0239}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "Data\Data.csproj", "{56C468E5-AD64-4296-B7B0-CBE32C96432D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service", "Service\Service.csproj", "{CA040C3B-6B56-40C4-843F-145C8E528801}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,6 +29,18 @@ Global
 		{FA592CB6-4BB1-3800-8E64-C6DF3564FF87}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FA592CB6-4BB1-3800-8E64-C6DF3564FF87}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FA592CB6-4BB1-3800-8E64-C6DF3564FF87}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{39ACBEE9-CE51-4F41-A4AD-AD16AD9E0239}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39ACBEE9-CE51-4F41-A4AD-AD16AD9E0239}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39ACBEE9-CE51-4F41-A4AD-AD16AD9E0239}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39ACBEE9-CE51-4F41-A4AD-AD16AD9E0239}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56C468E5-AD64-4296-B7B0-CBE32C96432D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56C468E5-AD64-4296-B7B0-CBE32C96432D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56C468E5-AD64-4296-B7B0-CBE32C96432D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56C468E5-AD64-4296-B7B0-CBE32C96432D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA040C3B-6B56-40C4-843F-145C8E528801}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA040C3B-6B56-40C4-843F-145C8E528801}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA040C3B-6B56-40C4-843F-145C8E528801}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA040C3B-6B56-40C4-843F-145C8E528801}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

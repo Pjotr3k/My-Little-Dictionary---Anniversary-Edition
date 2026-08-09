@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using My_Little_Dictionary___Anniversary_Edition.Data;
-using My_Little_Dictionary___Anniversary_Edition.DTOs.Security;
-using My_Little_Dictionary___Anniversary_Edition.Services.Interfaces;
+using Service.DTOs.Security;
+using Service.Interfaces;
 
 namespace My_Little_Dictionary___Anniversary_Edition.Controllers
 {
