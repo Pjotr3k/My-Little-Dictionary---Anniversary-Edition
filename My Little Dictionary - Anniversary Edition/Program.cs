@@ -1,12 +1,10 @@
+using Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
-using My_Little_Dictionary___Anniversary_Edition.Data;
-using My_Little_Dictionary___Anniversary_Edition.Services;
-using My_Little_Dictionary___Anniversary_Edition.Services.Interfaces;
-using System.Security.Policy;
+using Service;
+using Service.Interfaces;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);

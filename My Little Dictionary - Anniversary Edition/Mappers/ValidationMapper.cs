@@ -1,5 +1,5 @@
-﻿using My_Little_Dictionary___Anniversary_Edition.DTOs;
-using My_Little_Dictionary___Anniversary_Edition.Model;
+﻿using Domain;
+using Service.DTOs;
 
 namespace My_Little_Dictionary___Anniversary_Edition.Mappers
 {
@@ -19,6 +19,5 @@ namespace My_Little_Dictionary___Anniversary_Edition.Mappers
         public static PartOfSpeechDTO ToDTO(this PartOfSpeech model) => new PartOfSpeechDTO(model);
         public static FormDTO ToDTO(this Form model) => new FormDTO(model);
         public static LexiconDataDTO ToDataDTO(this Lexicon model) => new LexiconDataDTO(model.Name, model.Description, model.Code);
-
     }
 }

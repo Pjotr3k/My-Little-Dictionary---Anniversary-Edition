@@ -1,7 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Data;
 using Microsoft.AspNetCore.Mvc;
-using My_Little_Dictionary___Anniversary_Edition.Data;
-using My_Little_Dictionary___Anniversary_Edition.Validation;
+using Service.Validation;
 using System.Diagnostics;
 
 namespace My_Little_Dictionary___Anniversary_Edition.Controllers
