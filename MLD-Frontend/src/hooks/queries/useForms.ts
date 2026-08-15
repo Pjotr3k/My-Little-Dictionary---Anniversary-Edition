@@ -9,7 +9,7 @@ export default function useForms(pos?: string){
     return useQuery<ApiResponse<Array<PartOfSpeech>>>({
         queryKey: ["forms", params],
         queryFn: async () =>
-            axiosInstance.get("Dictionary/Form" + params)
+            axiosInstance.get(`Dictionary/FormByPartOfSpeech/${pos}`)
         .then((res) => res.data)        
     })
 }
